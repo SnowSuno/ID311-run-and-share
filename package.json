@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "dev": "concurrently \"cd client && yarn dev\" \"cd server && yarn dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.1"
+  },
+  "license": "MIT"
+}
