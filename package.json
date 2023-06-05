@@ -1,9 +1,23 @@
 {
+  "name": "run-and-share",
+  "version": "0.0.1",
+  "type": "module",
   "scripts": {
-    "dev": "concurrently \"cd client && yarn dev\" \"cd server && yarn dev\""
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "devDependencies": {
-    "concurrently": "^8.0.1"
+    "@sveltejs/vite-plugin-svelte": "^2.0.3",
+    "@tsconfig/svelte": "^4.0.1",
+    "svelte": "^3.57.0",
+    "svelte-check": "^2.10.3",
+    "tslib": "^2.5.0",
+    "typescript": "^5.0.2",
+    "vite": "^4.3.2",
+    "vite-plugin-mkcert": "^1.15.0"
   },
+  "dependencies": {},
   "license": "MIT"
 }

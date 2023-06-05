@@ -2,13 +2,21 @@
   import svelteLogo from "./assets/svelte.svg";
   import Counter from "./lib/Counter.svelte";
 
-  import { io } from "socket.io-client";
+  import Geolocation from "./Geolocation.svelte";
 
-  const socket = io("http://localhost:8000");
+
+  // const socket = io(backendHost);
+
+  // navigator.geolocation.watchPosition(position => {
+  //   socket.emit("geolocation.change", position);
+  // });
+
 </script>
 
 <main>
-    <button on:click={() => socket.emit("geolocation.change")}>qwer</button>
+<!--    <Camera/>-->
+    <Geolocation/>
+<!--    <button on:click={() => socket.emit("geolocation.change")}>qwer</button>-->
 </main>
 
 <style>
