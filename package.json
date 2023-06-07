@@ -18,6 +18,10 @@
     "vite": "^4.3.2",
     "vite-plugin-mkcert": "^1.15.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "firebase": "^9.22.1",
+    "rxfire": "^6.0.3",
+    "rxjs": "^7.8.1"
+  },
   "license": "MIT"
 }

@@ -3,17 +3,20 @@
   import Counter from "./lib/Counter.svelte";
   import NaverMap from "./components/NaverMap.svelte";
   import Geolocation from "./Geolocation.svelte";
-
-
+  import Login from "./components/Login.svelte";
+  
   // const socket = io(backendHost);
 
   // navigator.geolocation.watchPosition(position => {
   //   socket.emit("geolocation.change", position);
   // });
 
+
 </script>
 
 <main>
+    <Login />
+
     <NaverMap/>
 <!--    <Camera/>-->
 <!-- <Geolocation/> -->
