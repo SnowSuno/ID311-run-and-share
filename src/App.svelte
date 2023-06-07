@@ -3,6 +3,7 @@
   import Counter from "./lib/Counter.svelte";
   import NaverMap from "./components/NaverMap.svelte";
   import Geolocation from "./Geolocation.svelte";
+  
 
 
   // const socket = io(backendHost);

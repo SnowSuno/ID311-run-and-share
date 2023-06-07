@@ -1,30 +1,64 @@
 <script>
     import {onMount} from 'svelte'
-import { run } from 'svelte/internal';
     import {calculateDistance}from '../utils/calculateDistance'
+
     //VARIABLES
     let map = null;
     let location = {latitude: 37.5666805, longitude:126.9784147}
-    let marker = null;
+    let smallCircle = null;
+    let bigCircle = null;
     let watchId; 
     let path = [];
     let polyline;
     let isRunning = false;
     let runningDistance = 0
 
+    //StopWatch Variables
+    let startTime = 0;
+    let elapsedTime = 0;
+    let intervalId;
+    let hrs = "00";
+    let mins = "00";
+    let secs = "00";
+    
+
     onMount(() => {
+
+        let center = new naver.maps.LatLng(location.latitude,location.longitude);
+
         //Map Instantiation
         let mapOptions = {
-            center: new naver.maps.LatLng(location.latitude,location.longitude),
+            center: center,
             zoom: 17,
         } 
         map = new naver.maps.Map('map', mapOptions);
-        //Marker Instantiation
-        marker = new naver.maps.Marker({
-            position:  new naver.maps.LatLng(location.latitude,location.longitude),
-            map: map
-        })
 
+        //Small Circle Instantiation
+        let circleOptions = {
+            map: map,
+            center: center,
+            radius: 2,
+            fillColor: '#ff0000',
+            fillOpacity: 0.5,
+            strokeColor: '#ff0000',
+            strokeOpaciy: 1,
+            strokeWeight: 2
+            
+        }
+        smallCircle = new naver.maps.Circle(circleOptions)
+        //Big Circle Instantiation
+        circleOptions = {
+            map: map,
+            center: center,
+            radius: 10,
+            fillColor: '#ff0000',
+            fillOpacity: 0.2,
+            strokeColor: null,
+            strokeOpaciy: 0,
+            strokeWeight: 0
+            
+        }
+        bigCircle = new naver.maps.Circle(circleOptions);
         //Callback functions for GEOLOCATION API
         const successCallback = (position) => {
             let prevLocation = location
@@ -34,11 +68,12 @@ import { run } from 'svelte/internal';
             //MapUpdateLocation
             let updatedLocation = new naver.maps.LatLng(location.latitude,location.longitude);
             map.setCenter(updatedLocation);
-            marker.setPosition(updatedLocation);
+            smallCircle.setCenter(updatedLocation);
+            bigCircle.setCenter(updatedLocation);
             if(isRunning){
                 const distance = calculateDistance(prevLocation.latitude,prevLocation.longitude,location.latitude,location.longitude)
-                console.log(distance)
-                runningDistance += distance
+                console.log(distance) //in metres
+                runningDistance += distance //in metres
                 path.push(updatedLocation);
                 drawPath(path);
             }
@@ -53,13 +88,19 @@ import { run } from 'svelte/internal';
 
     //function for handling RUNNING
     const startRunning =  () => {
-        isRunning = true;
         console.log('started running')
+        isRunning = true;
+        startTime = Date.now() - elapsedTime;
+        intervalId = setInterval(updateTime,75); 
+        
+        
     }
     const stopRunning = () => {
         isRunning = false;
         console.log('stopped running')
         console.log(runningDistance)
+        elapsedTime = Date.now() - startTime;
+        clearInterval(intervalId);
     }
     //function for drawing running trail
     const drawPath = (path) => {
@@ -74,10 +115,26 @@ import { run } from 'svelte/internal';
             })
         }
     }
+    //updateTime
+    function updateTime(){
+        elapsedTime = Date.now() - startTime
+
+        const sec = Math.floor((elapsedTime / 1000) % 60);
+        const min = Math.floor((elapsedTime / (1000 * 60)) % 60);
+        const hr = Math.floor((elapsedTime / (1000 * 60 * 60)) % 60);
+
+        secs = pad(sec);
+        mins = pad(min);
+        hrs = pad(hr)
+        function pad(unit){
+            return (("0") + unit).length > 2 ? unit : "0" + unit
+        }
+    }
 </script>
 
 <div>
     <div id="map"></div>
+    <div>{hrs}:{mins}:{secs}</div>
     <div>
         {#if isRunning}
         <button on:click={stopRunning}>Stop Running</button>
