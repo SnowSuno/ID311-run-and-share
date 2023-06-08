@@ -17,12 +17,14 @@
     "tslib": "^2.5.0",
     "typescript": "^5.0.2",
     "vite": "^4.3.2",
-    "vite-plugin-mkcert": "^1.15.0"
+    "vite-plugin-mkcert": "^1.15.0",
+    "vite-tsconfig-paths": "^4.2.0"
   },
   "dependencies": {
     "firebase": "^9.22.1",
     "rxfire": "^6.0.3",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "svelte-spa-router": "^3.3.0"
   },
   "license": "MIT"
 }
