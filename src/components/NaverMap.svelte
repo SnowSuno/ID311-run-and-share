@@ -1,7 +1,9 @@
 <script>
     import {onMount} from 'svelte'
-import { run } from 'svelte/internal';
+    import { run } from 'svelte/internal';
     import {calculateDistance}from '../utils/calculateDistance'
+    import { db } from '../utils/firebase'
+
     //VARIABLES
     let map = null;
     let location = {latitude: 37.5666805, longitude:126.9784147}
@@ -60,6 +62,10 @@ import { run } from 'svelte/internal';
         isRunning = false;
         console.log('stopped running')
         console.log(runningDistance)
+        // alert("end!")
+        // db.collection('testing').add({ path, runningDistance, created: Date.now() })
+        //     .then(res => alert(res))
+        //     .catch(e => alert(e.message));
     }
     //function for drawing running trail
     const drawPath = (path) => {

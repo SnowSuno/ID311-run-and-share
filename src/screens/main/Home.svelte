@@ -35,7 +35,7 @@
 </script>
 
 <div id="map"></div>
-<button>Let's Sprint</button>
+<button id="main_sprint">Let's Sprint</button>
 
 <style>
     #map {
@@ -46,9 +46,18 @@
         height: 100%;
     }
 
-    button {
-        position: absolute;
-        bottom: 100px;
+    #main_sprint {
+        position: relative;
+        bottom: 20%;
+        left: 10%;
+        width: 80%;
+        height: 8%;
+        border-radius: 15px;
+        background-color: black;
+        color: white;
+        font-family: Helvetica, sans-serif;
+        font-size: large;
+        border: 0;
     }
 
     :global(#marker) {
