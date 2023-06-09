@@ -2,6 +2,7 @@
   import { user } from "~/store/auth";
   import { Main, Splash, Login } from "~/screens";
 
+
   let loading = true;
   setTimeout(() => { loading = false; }, 2000);
 </script>

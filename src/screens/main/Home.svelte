@@ -1,11 +1,18 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { link } from "svelte-spa-router";
+
   import { location } from "~/store/location";
+  import StackRouter, { stackLink } from "~/lib/stack-router";
+
+  import { routes } from "./home/routes";
 
   let map: naver.maps.Map;
   let marker: naver.maps.Marker;
 
   $: position = new naver.maps.LatLng($location.latitude, $location.longitude);
+
+  // $: parsed = querystring.parse(window.location.search);
 
   onMount(() => {
 
@@ -31,11 +38,11 @@
     marker.setPosition(position);
   }
 
-
 </script>
 
 <div id="map"></div>
-<button id="main_sprint">Let's Sprint</button>
+<a href="/plan" use:stackLink>Let's Sprint</a>
+<StackRouter {routes}/>
 
 <style>
     #map {
@@ -46,18 +53,9 @@
         height: 100%;
     }
 
-    #main_sprint {
-        position: relative;
-        bottom: 20%;
-        left: 10%;
-        width: 80%;
-        height: 8%;
-        border-radius: 15px;
-        background-color: black;
-        color: white;
-        font-family: Helvetica, sans-serif;
-        font-size: large;
-        border: 0;
+    a {
+        position: absolute;
+        bottom: 100px;
     }
 
     :global(#marker) {
