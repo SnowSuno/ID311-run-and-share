@@ -1,6 +1,9 @@
 <script>
     import {onMount} from 'svelte'
+import { bubble } from 'svelte/internal';
     import {calculateDistance}from '../utils/calculateDistance'
+    import {db} from '../utils/firebase'
+import Navbar from './Navbar.svelte';
 
     //VARIABLES
     let map = null;
@@ -8,7 +11,8 @@
     let smallCircle = null;
     let bigCircle = null;
     let watchId; 
-    let path = [];
+    let path = []; // [Type:NaverMapLatLng]
+    let pathFirestore = []; //[Type: {latitude: number,longitude: number}]
     let polyline;
     let isRunning = false;
     let runningDistance = 0
@@ -75,6 +79,10 @@
                 console.log(distance) //in metres
                 runningDistance += distance //in metres
                 path.push(updatedLocation);
+                pathFirestore.push({
+                    latitude: location.latitude,
+                    longitude: location.longitude
+                })
                 drawPath(path);
             }
         } 
@@ -97,8 +105,9 @@
     }
     const stopRunning = () => {
         isRunning = false;
-        console.log('stopped running')
-        console.log(runningDistance)
+        console.log('stopped running');
+        console.log(runningDistance);
+        addRoute(runningDistance,"beginner",pathFirestore,"05:10");
         elapsedTime = Date.now() - startTime;
         clearInterval(intervalId);
     }
@@ -130,9 +139,57 @@
             return (("0") + unit).length > 2 ? unit : "0" + unit
         }
     }
+
+    //function for adding route to db
+    function addRoute(distance,intensity,path,time,){
+        db.collection('test').add({
+            distance: distance,
+            intensity: intensity,
+            path: path,
+            time:time,
+        })
+    }
+    //function for retrieving data
+    async function getRoutes(){
+        await db.collection('test1').get().then((snapshot) => {
+            snapshot.docs.forEach(doc => {
+                console.log(doc.data());
+                console.log(doc.id);
+            }) 
+        })
+    }
+
+    //function for filtering data
+    async function filterData(filterType,filterValue){
+        await db.collection('test1').get().then((snapshot) => {
+            const data = []
+
+            snapshot.docs.forEach(doc => {
+                let difference;
+                if(filterType === 'distance'){
+                    difference = Math.abs(doc.data().distance - filterValue)
+                } else if (filterType === 'time'){
+                    difference = Math.abs(doc.data().time - filterValue)
+                } else if (filterType === 'intensity'){
+                    difference = Math.abs(doc.data().intensity - filterValue)
+                } else{
+                    console.log('Invalid filter type')
+                }
+                data.push({doc, difference})
+            })
+
+            data.sort((a,b) => a.difference - b.difference);
+
+            data.forEach((doc) =>{
+                console.log(`ID: ${doc.doc.id}`);
+                console.log(`Data: ${JSON.stringify(doc.doc.data().distance)}`)
+            })
+        })
+    }
 </script>
 
 <div>
+    <Navbar/>
     <div id="map"></div>
     <div>{hrs}:{mins}:{secs}</div>
     <div>
@@ -142,6 +199,8 @@
         <button on:click={startRunning}>Start Running</button>
         {/if}
     </div>
+    <button on:click={getRoutes}>get routes</button>
+    <button on:click={() => {filterData('distance', 10)}}>filterData</button>
 </div>
 
 <style>
