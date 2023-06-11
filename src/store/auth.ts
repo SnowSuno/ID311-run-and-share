@@ -2,11 +2,10 @@ import { readable } from "svelte/store";
 import { authState } from "rxfire/auth";
 import type { User } from "firebase/auth";
 
-import { auth } from "~/utils/firebase";
+import { auth as fireAuth } from "../firebase/config";
 
-
-export const user = readable<User>(undefined, set => {
-  const subscription = authState(auth).subscribe(set);
+export const auth = readable<User | null>(undefined, set => {
+  const subscription = authState(fireAuth).subscribe(set);
 
   return () => subscription.unsubscribe();
 });
