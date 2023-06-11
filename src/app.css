@@ -8,7 +8,6 @@
 }
 
 html, body, #app {
-    background-color: #fff;
     height: 100%;
     width: 100%;
 }
@@ -17,6 +16,7 @@ html, body, #app {
     /* Spacings */
     --inline: 24px;
     --radius-lg: 25px;
+    --header-h: 62px;
 
     /* Colors */
     --shadow: 0 0 10px rgba(0, 0, 0, 0.1)
@@ -24,5 +24,7 @@ html, body, #app {
 
 button {
     all: unset;
+}
+button:not(:disabled) {
     cursor: pointer;
 }

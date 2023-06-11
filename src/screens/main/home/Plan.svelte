@@ -3,6 +3,6 @@
 </script>
 
 <div>
-    Plan
+<!--    Plan-->
     <a href="/plan/suggest" use:stackLink>Suggestions</a>
 </div>

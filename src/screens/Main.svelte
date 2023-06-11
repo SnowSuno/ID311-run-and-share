@@ -1,8 +1,15 @@
 <script lang="ts">
-  import Router, {link} from "svelte-spa-router";
+  import Router from "svelte-spa-router";
   import { routes } from "./main/routes";
-  import { NavBar } from "~/components/layout";
+  import { Header, NavBar } from "~/components/layout";
+  import { Sheet } from "~/components/elements";
+import { fade } from "svelte/transition";
+
 </script>
 
-<Router {routes}/>
-<NavBar/>
+<main transition:fade>
+    <Header/>
+    <Router {routes}/>
+    <NavBar/>
+</main>
+

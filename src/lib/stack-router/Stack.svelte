@@ -4,11 +4,12 @@
   import LeftChevron from "~/assets/icons/LeftChevron.svelte";
 
   export let title = "";
+  export let back = pop;
 </script>
 
 <main transition:fly={{x: "100%", opacity: 1}}>
     <header>
-        <button on:click={pop}>
+        <button on:click={back}>
             <LeftChevron/>
         </button>
         <h1>{title}</h1>
