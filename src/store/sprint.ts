@@ -46,7 +46,7 @@ const stop = () => {
       createdAt: endTime,
       distance: 0,
       level: "easy",
-      route: route.map(coords => coords.toFirestore()),
+      route: route,
       time: endTime.getTime() - startTime.getTime(),
       user: doc(usersRef, get(auth).uid),
     }

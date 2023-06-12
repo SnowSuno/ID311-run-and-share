@@ -17,7 +17,7 @@
     </button>
     <h1>{title}</h1>
   </header>
-    <slot></slot>
+  <slot></slot>
 </main>
 
 <style>

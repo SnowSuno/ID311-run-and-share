@@ -25,7 +25,7 @@
       map,
       position: $location.toNaver(),
       icon: {
-        content: "<div id='marker'></div>",
+        content: "<div class='marker'></div>",
       }
     });
 
@@ -44,8 +44,9 @@
     marker.setPosition($location.toNaver());
   }
 
-  $: if (polyline && route) {
-    polyline.setPath(route.map(p => p.toNaver()));
+  $: if (polyline) {
+    polyline.setVisible(!!route);
+    route && polyline.setPath(route.map(p => p.toNaver()));
   }
 
 </script>
@@ -67,53 +68,5 @@
     #map {
         width: 100%;
         height: 100%;
-    }
-
-    :global(#marker) {
-        width: 17px;
-        height: 17px;
-
-        transform: translate(-50%, -50%);
-        position: relative;
-    }
-
-    :global(#marker:before) {
-        content: "";
-        position: absolute;
-        width: 400%;
-        height: 400%;
-        top: -150%;
-        left: -150%;
-        background-color: black;
-        z-index: -1;
-        border-radius: 50%;
-
-        animation: ripple 1.5s ease-out infinite;
-    }
-
-    :global(#marker:after) {
-        content: "";
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: -4px;
-        left: -4px;
-        background-color: black;
-        border: 4px solid white;
-        box-shadow: var(--shadow);
-        z-index: -1;
-        border-radius: 50%;
-
-    }
-
-    @keyframes ripple {
-        from {
-            opacity: 1;
-            transform: scale(0);
-        }
-        to {
-            opacity: 0;
-            transform: scale(1.3);
-        }
     }
 </style>
