@@ -108,14 +108,6 @@
 
 </script>
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<div>
-<!--    Plan-->
-    <a href="/plan/suggest" use:stackLink>Suggestions</a>
-=======
-=======
->>>>>>> origin/snowsuno
 <div class="top-container">
     <h2>Search for paths</h2>
     <h6>Plan by</h6>
@@ -243,10 +235,6 @@
         Start
       </a>
     {/if}
-<<<<<<< HEAD
->>>>>>> 56e2b54400186e350da92bcb8f69e42af7e10fe1
-=======
->>>>>>> origin/snowsuno
 </div>
 
 <style>

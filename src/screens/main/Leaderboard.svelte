@@ -26,16 +26,17 @@
     async function addSomeData() {
         const falsedate = moment().add(1, 'days').format('YYYYMMDD');
         await addDoc(collection(db, "test3"), {
-            username: "류재",
+            username: "수노",
             date: date,
-            distance: 4.4,
-            level: "intermediate",
-            pace: 15,
+            distance: 8.4,
+            level: "Expert",
+            pace: 21,
             path: [],
-            time: "42:01",
+            time: "72:01",
             emoji: {
-                heart: 2,
-                fire: 3,
+                heart: 1,
+                fire: 0,
+                clap: 3,
             }
         });
     }
@@ -73,7 +74,7 @@
         width: 310px;
         height: 25px;
         margin-left: 7%;
-        margin-top: 10%;
+        margin-top: 5%;
 
         font-family: 'Open Sans', sans-serif;
         font-style: normal;
@@ -90,7 +91,7 @@
         white-space: nowrap;
         padding: 2%;
         margin: 7%;
-        margin-top: 5%;
+        margin-top: 3%;
     }
 
 </style>

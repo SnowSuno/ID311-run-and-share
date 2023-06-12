@@ -2,7 +2,7 @@
     import Icon from '@iconify/svelte';
     import { db } from '~/firebase/config'
     import { doc, updateDoc } from "firebase/firestore";
-    import Profile from "../../components/elements/Profile.svelte";
+    import ProfileSide from "../../components/elements/ProfileSide.svelte";
     import { friends } from "~/store";
 
     export let docId = "";
@@ -12,13 +12,15 @@
     export let time = "10:00";
     export let path = [];
     export let emoji = {
-        heart: 1,
-        fire: 1,
+        heart: 0,
+        fire: 0,
+        clap: 0,
     };
     export let showPopup = false;
 
     let heart_n = emoji.heart;
     let fire_n = emoji.fire;
+    let clap_n = emoji.clap;
 
     function emojiPopup() {
         console.log("popup");
@@ -33,6 +35,7 @@
             emoji: {
                 heart: heart_n,
                 fire: fire_n,
+                clap: clap_n,
             }    
         });
     }
@@ -45,9 +48,24 @@
             emoji: {
                 heart: heart_n,
                 fire: fire_n,
+                clap: clap_n,
             }    
         });
     }
+
+    async function clickClap() {
+        console.log("clap");
+        clap_n += 1;
+        const docRef = doc(db, "test3", docId);
+        await updateDoc(docRef, {
+            emoji: {
+                heart: heart_n,
+                fire: fire_n,
+                clap: clap_n,
+            }    
+        });
+    }
+
 // <div class="user_info">{user}</div>
 </script>
 
@@ -55,7 +73,7 @@
     <div class="td_card">
         {#each $friends as user}
             {#if user.nickname === username}
-                <Profile { user }/>
+                <ProfileSide { user }/>
             {/if}
         {/each}
         <div class="data">
@@ -112,6 +130,16 @@
                         {/key}
                     </div>
                 {/if}
+                {#if clap_n > 0}
+                    <div class="flex flex-row items-center gap-0.5">
+                        <Icon icon="twemoji:clapping-hands" width="15" />
+                        {#key clap_n}
+                            <div class="font-sans text-[10px]/[12px] font-normal text-deep-gray">
+                                {clap_n}
+                            </div>
+                        {/key}
+                    </div>
+                {/if}
             </div>
             <button on:click={emojiPopup} class="popup_button">
                 <Icon icon="ri:more-line" color="#ababab" width="14" height="14" />
@@ -122,10 +150,13 @@
         <div class="popup">
             <div class="flex flex-row items-center z-2000 p-3 justify-between">
                 <button on:click={clickHeart}>
-                    <Icon icon="noto:red-heart" width="14" />
+                    <Icon icon="noto:red-heart" width="14"/>
                 </button>
                 <button on:click={clickFire}>
                     <Icon icon="noto:fire" width="15" />
+                </button>
+                <button on:click={clickClap}>
+                    <Icon icon="twemoji:clapping-hands" width="15" />
                 </button>
             </div>
         </div>
@@ -181,7 +212,7 @@
         align-items: flex-start;
         padding: 8px 15px;
         gap: 5px;
-        margin-top: 20px;
+        margin-top: 10px;
 
         width: 126px;
         height: 86px;

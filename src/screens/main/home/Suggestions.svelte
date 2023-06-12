@@ -5,11 +5,11 @@
     import userIcon from "~/assets/icons/userIcon.svg";
     import { writableArray } from "~/store/suggestRoute";
     import { selectedPath } from "~/store/selectRoute";
-    import { user } from "../../../store/auth";
+    // import { user } from "../../../store/auth";
     import { stackLink } from "~/lib/stack-router";
     import { identity } from "svelte/internal";
     import { collection,Timestamp,addDoc,GeoPoint } from "firebase/firestore"; 
-    import {db} from '~/utils/firebase'
+    import { db } from "~/firebase/config";
 
     let map;
     let marker;

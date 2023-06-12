@@ -1,4 +1,4 @@
-import { db } from '~/utils/firebase'
+import { db } from '~/firebase/config'
 import { collection, getDocs } from "firebase/firestore"; 
 
 export async function filterData(filterType,filterValue){
