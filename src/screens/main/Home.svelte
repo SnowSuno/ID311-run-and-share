@@ -1,39 +1,57 @@
 <script lang="ts">
-  import StackRouter, { stackLink } from "~/lib/stack-router";
+  import StackRouter, { push } from "~/lib/stack-router";
 
   import { routes } from "./home/routes";
   import FullScreenMap from "~/components/FullScreenMap.svelte";
-  import { Sheet } from "../../components/elements";
+  import { MainButton, Sheet, Spacer, Text } from "~/components/elements";
 
   import { friends } from "~/store";
   import Profile from "../../components/elements/Profile.svelte";
 
+  import { route, recording } from "~/store/route";
+
+  const stop = () => push("/result").then(() => {
+    recording.set(false);
+    route.set([]);
+  });
+
 
 </script>
 
-<Sheet>
+<FullScreenMap route={$route}/>
+{#if $recording}
+  <Sheet top>
+    <Spacer y={20}/>
+    <Text heading>Daily Sprint</Text>
+  </Sheet>
+  <Sheet bottom>
+    <Spacer y={160}/>
+    <MainButton on:click={stop}>
+      Stop
+    </MainButton>
+  </Sheet>
+{:else}
+  <Sheet header>
     <div class="friends">
-        {#each $friends as user}
-            <Profile {user}/>
-        {/each}
+      {#each $friends as user}
+        <Profile {user}/>
+      {/each}
     </div>
-</Sheet>
-<FullScreenMap/>
-<a href="/plan" use:stackLink>Let's Sprint</a>
+  </Sheet>
+  <MainButton float stack href="/plan">
+    Let's Sprint
+  </MainButton>
+{/if}
+
 <StackRouter {routes}/>
 
 <style>
-    a {
-        position: absolute;
-        bottom: 100px;
-    }
-
     .friends {
         display: flex;
         flex-direction: row;
         gap: 12px;
-        margin-inline: -24px;
-        padding-inline: 24px;
+        margin-inline: calc(-1 * var(--inline));
+        padding-inline: var(--inline);
 
         overflow-x: scroll;
         scrollbar-width: none;
