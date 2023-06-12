@@ -1,147 +1,145 @@
 <script>
-    import { link } from "svelte-spa-router";
-    import { onDestroy, onMount } from "svelte";
-    import { location } from "~/store/location";
-    import userIcon from "~/assets/icons/userIcon.svg";
-    import { writableArray } from "~/store/suggestRoute";
-    import { selectedPath } from "~/store/selectRoute";
-    // import { user } from "../../../store/auth";
-    import { stackLink } from "~/lib/stack-router";
-    import { identity } from "svelte/internal";
-    import { collection,Timestamp,addDoc,GeoPoint } from "firebase/firestore"; 
-    import { db } from "~/firebase/config";
+  import { onDestroy, onMount } from "svelte";
+  import { location } from "~/store/location";
+  import userIcon from "~/assets/icons/userIcon.svg";
+  import { writableArray } from "~/store/suggestRoute";
+  import { selectedPath } from "~/store/selectRoute";
+  import { stackLink } from "~/lib/stack-router";
+  import { pop } from "svelte-spa-router";
 
-    let map;
-    let marker;
-    let selectedButton = null
-    let polyline;
-    let polylinePath = []
-    let pathToBackend = []
-    function selectButton(userinfo){
-        if(polyline){
-            polyline.setMap(null)
-            polyline = null
-            polylinePath = []
-        }
-        if(selectedButton === userinfo.id){
-            selectedButton = null  
-        } else{
-            selectedButton = userinfo.id
-            userinfo.path.forEach((pathEl) => {
-                const latlng = new naver.maps.LatLng(pathEl.latitude,pathEl.longitude)
-                polylinePath.push(latlng)
-            })
-            polyline = new naver.maps.Polyline({
-                map:map,
-                path: polylinePath,
-                strokeColor: '#f00',
-                strokeWeight: 3
-            })
-            console.log(polylinePath[0])
-            map.panTo(polylinePath[0])
+  let map;
+  let marker;
+  let selectedButton = null;
+  let polyline;
+  let polylinePath = [];
+  let pathToBackend = [];
 
-        }
-       
-        console.log(selectedButton)
+  function selectButton (userinfo) {
+    if (polyline) {
+      polyline.setMap(null);
+      polyline = null;
+      polylinePath = [];
     }
-    $: position = new naver.maps.LatLng($location.latitude, $location.longitude);
-    
-    // $: parsed = querystring.parse(window.location.search);
+    if (selectedButton === userinfo.id) {
+      selectedButton = null;
+    } else {
+      selectedButton = userinfo.id;
+      userinfo.path.forEach((pathEl) => {
+        const latlng = new naver.maps.LatLng(pathEl.latitude, pathEl.longitude);
+        polylinePath.push(latlng);
+      });
+      polyline = new naver.maps.Polyline({
+        map: map,
+        path: polylinePath,
+        strokeColor: "#f00",
+        strokeWeight: 3
+      });
+      console.log(polylinePath[0]);
+      map.panTo(polylinePath[0]);
 
-    onMount(() => {
-        
+    }
 
+    console.log(selectedButton);
+  }
 
-        map = new naver.maps.Map("mapSuggestions", {
-            center: position,
-            zoom: 17,
-            disableKineticPan: false,
-            logoControl: false,
-            tileSpare: 5,
-            scaleControl: false,
-            baseTileOpacity: 1,
-        });
-        marker = new naver.maps.Marker({
-            position, map, icon: {
-                content: "<div id='marker'></div>",
-            }
-        });
-        // naver.maps.Event.addListener(map, 'click', function(e){
-        //     const marker = new naver.maps.Marker({
-        //         position:e.coord,
-        //         map:map
-        //     })
-        //     pathToBackend.push(new GeoPoint(e.coord.y,e.coord.x))
-        //     console.log(pathToBackend)
-        // })
+  $: position = new naver.maps.LatLng($location.latitude, $location.longitude);
+
+  // $: parsed = querystring.parse(window.location.search);
+
+  onMount(() => {
+
+    map = new naver.maps.Map("mapSuggestions", {
+      center: position,
+      zoom: 17,
+      disableKineticPan: false,
+      logoControl: false,
+      tileSpare: 5,
+      scaleControl: false,
+      baseTileOpacity: 1,
     });
+    marker = new naver.maps.Marker({
+      position, map, icon: {
+        content: "<div id='marker'></div>",
+      }
+    });
+    // naver.maps.Event.addListener(map, 'click', function(e){
+    //     const marker = new naver.maps.Marker({
+    //         position:e.coord,
+    //         map:map
+    //     })
+    //     pathToBackend.push(new GeoPoint(e.coord.y,e.coord.x))
+    //     console.log(pathToBackend)
+    // })
+  });
 
-    $: if (map && marker) {
-        
-        map.panTo(position);
-        marker.setPosition(position);
-    }
+  $: if (map && marker) {
 
-    function handleSelectClick(){
-        $selectedPath = $writableArray.filter((item)=> item.id === selectedButton)
-        console.log($selectedPath)
-    }
+    map.panTo(position);
+    marker.setPosition(position);
+  }
 
-    // async function addRoute(distance,level,path,time,user){
-    //    const data = {
-    //        date: Timestamp.fromDate(new Date("June 10, 2023")),
-    //        distance: distance,
-    //        level: level,
-    //        path: path,
-    //        time: time,
-    //        user: user
-    //    }
-    //    await addDoc(collection(db,"test"), data)
-    // }
+  function handleSelectClick () {
+    $selectedPath = $writableArray.filter((item) => item.id === selectedButton);
+    console.log($selectedPath);
+    pop();
+  }
+
+  // async function addRoute(distance,level,path,time,user){
+  //    const data = {
+  //        date: Timestamp.fromDate(new Date("June 10, 2023")),
+  //        distance: distance,
+  //        level: level,
+  //        path: path,
+  //        time: time,
+  //        user: user
+  //    }
+  //    await addDoc(collection(db,"test"), data)
+  // }
 </script>
 
 <div class="top-container">
-    <div class='empty-div'></div>
-    <div id="mapSuggestions"></div>
-    <div class="scrollable-content">
-        {#each $writableArray as userinfo}
-        <button class="scrollable-item" class:active={selectedButton === userinfo.id} on:click={() => selectButton(userinfo)}>
-            <div class="user-name">
-                <img src={userIcon} alt="img">
-                <span>Sprint by</span>
-                <h2>{userinfo.user}</h2>
-            </div>
-            <div class="sprint-info">
-                <div>
-                    <h6>{Math.round(userinfo.distance * 100) / 100}km</h6>
-                    <span>distance</span>
-                </div>
-                <div>
-                    <h6>{Math.round(userinfo.time / 60)}m</h6>
-                    <span>Time</span>
-                </div>
-                <div>
-                    <h6>{Math.round((userinfo.distance/(userinfo.time / 3600)) * 100) / 100}km/h</h6>
-                    <span>Pace</span>
-                </div>
-            </div>
-        </button>
-        {/each}
-    </div>
-   
-    <a href="/plan" use:stackLink class="select-anchor" class:disabledAnchor = {selectedButton === null} on:click={handleSelectClick}>
-        Select
-    </a>
-    <!-- <button class="removeButton" on:click={
-        () => {
-            addRoute(2.4,"intermediate",pathToBackend,1780,'juggernaut')
-        }
-    }>add route</button> -->
-    
-    
-    <!-- <a href="/" class="wtf">hello</a> -->
-</div>
+  <div class='empty-div'></div>
+  <div id="mapSuggestions"></div>
+  <div class="scrollable-content">
+    {#each $writableArray as userinfo}
+      <button class="scrollable-item" class:active={selectedButton === userinfo.id}
+              on:click={() => selectButton(userinfo)}>
+        <div class="user-name">
+          <img src={userIcon} alt="img">
+          <span>Sprint by</span>
+          <h2>{userinfo.user}</h2>
+        </div>
+        <div class="sprint-info">
+          <div>
+            <h6>{Math.round(userinfo.distance * 100) / 100}km</h6>
+            <span>distance</span>
+          </div>
+          <div>
+            <h6>{Math.round(userinfo.time / 60)}m</h6>
+            <span>Time</span>
+          </div>
+          <div>
+            <h6>{Math.round((userinfo.distance / (userinfo.time / 3600)) * 100) / 100}km/h</h6>
+            <span>Pace</span>
+          </div>
+        </div>
+      </button>
+    {/each}
+  </div>
 
+  <a class="select-anchor" class:disabledAnchor={selectedButton === null}
+     on:click={handleSelectClick}>
+    Select
+  </a>
+  <!-- <button class="removeButton" on:click={
+      () => {
+          addRoute(2.4,"intermediate",pathToBackend,1780,'juggernaut')
+      }
+  }>add route</button> -->
+
+
+  <!-- <a href="/" class="wtf">hello</a> -->
+</div>
 
 
 <style>
@@ -156,8 +154,9 @@
         background: #000000;
         color: white;
         top: 100px;
-        
+
     }
+
     .wtf {
         position: absolute;
         width: 80%;
@@ -174,13 +173,15 @@
         background: #000000;
         color: white;
     }
+
     .top-container {
         position: relative;
         display: flex;
         flex-direction: column;
         width: 100%;
-        height: 100%;    
+        height: 100%;
     }
+
     #mapSuggestions {
         position: fixed;
         top: 0;
@@ -188,6 +189,7 @@
         width: 100%;
         height: 100%;
     }
+
     .empty-div {
         position: fixed;
         margin-bottom: 2px;
@@ -198,6 +200,7 @@
         border-radius: 0 0 var(--radius-lg) var(--radius-lg);
         z-index: 101;
     }
+
     .scrollable-content {
         display: flex;
         flex-direction: column;
@@ -211,11 +214,13 @@
         bottom: 120px;
         height: 160px;
         /* background-color: black; */
-        
+
     }
+
     .scrollable-content::-webkit-scrollbar {
         display: none;
     }
+
     .scrollable-content .scrollable-item {
         display: flex;
         flex-direction: column;
@@ -226,23 +231,29 @@
         background: #FFFFFF;
         box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.05);
         border-radius: 20px;
-        padding: 14px 12px; 
+        padding: 14px 12px;
     }
+
     .scrollable-content .active {
         background: black;
     }
+
     .scrollable-content .active h2 {
         color: #ffffff;
     }
+
     .scrollable-content .active span {
-        color: rgba(255, 255, 255, 0.5); 
+        color: rgba(255, 255, 255, 0.5);
     }
+
     .scrollable-content .active .sprint-info {
         background: #212121;
     }
+
     .scrollable-content .active h6 {
         color: #ffffff;
     }
+
     .user-name {
         display: flex;
         flex-direction: row;
@@ -257,39 +268,46 @@
         justify-content: space-between;
         gap: 8px;
     }
+
     .sprint-info div {
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 6px;
     }
+
     .sprint-info h6 {
         font-size: 16px;
         font-weight: 700;
         font-style: normal;
         color: #000000;
     }
+
     .sprint-info span {
         font-size: 9px;
         font-weight: 500;
         font-style: normal;
         color: #7D7D7D;
     }
+
     .user-name {
         display: flex;
         flex-direction: row;
         align-items: center;
         gap: 6px;
     }
+
     .user-name span {
         font-weight: bold;
         font-size: 16px;
         color: rgba(0, 0, 0, 0.5);
     }
+
     .user-name h2 {
         font-size: 16px;
         color: #000000;
     }
+
     .select-anchor {
         position: fixed;
         margin-left: auto;
@@ -305,66 +323,14 @@
         justify-content: center;
         border-radius: 18px;
         border: none;
-        background:#000000;
+        background: #000000;
         text-decoration: none;
         color: #FFFFFF;
     }
+
     .disabledAnchor {
         pointer-events: none;
-        background: rgba(0,0,0,0.3);
-    }
-    
-
-    :global(#marker) {
-        width: 17px;
-        height: 17px;
-        /*border-radius: 50%;*/
-        /*background-color: black;*/
-        /*box-shadow: var(--shadow);*/
-
-        transform: translate(-50%, -50%);
-        position: relative;
-        /*z-index: 1000;*/
+        background: rgba(0, 0, 0, 0.3);
     }
 
-    :global(#marker:before) {
-        content: "";
-        position: absolute;
-        width: 400%;
-        height: 400%;
-        top: -150%;
-        left: -150%;
-        background-color: black;
-        z-index: -1;
-        border-radius: 50%;
-
-        animation: ripple 1.5s ease-out infinite;
-    }
-
-    :global(#marker:after) {
-        content: "";
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: -4px;
-        left: -4px;
-        background-color: black;
-        border: 4px solid white;
-        box-shadow: var(--shadow);
-        z-index: -1;
-        border-radius: 50%;
-
-    }
-
-    @keyframes ripple {
-        from {
-            opacity: 1;
-            transform: scale(0);
-        }
-        to {
-            opacity: 0;
-            transform: scale(1.3);
-        }
-    }
-    
 </style>
