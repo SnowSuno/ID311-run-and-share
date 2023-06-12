@@ -1,21 +1,24 @@
 <script lang="ts">
-  import { auth, user } from "~/store";
+  import { auth, user, location } from "~/store";
   import { Main, Splash, Login, Register } from "~/screens";
-  import BottomSheet from "./components/elements/BottomSheet.svelte";
-
+  // import BottomSheet from "./components/elements/BottomSheet.svelte";
 
   let loading = true;
   setTimeout(() => { loading = false; }, 1000);
 </script>
 
-{#if loading || $auth === undefined || $user === undefined}
-    <Splash/>
+{#if loading
+|| $auth === undefined
+|| $user === undefined
+|| $location === undefined
+}
+  <Splash/>
 {:else if $auth === null}
-    <Login/>
+  <Login/>
 {:else if !$user}
-    <Register/>
+  <Register/>
 {:else}
-    <Main/>
+  <Main/>
 {/if}
 
 <!--<BottomSheet open={true}>-->
