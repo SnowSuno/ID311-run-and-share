@@ -15,16 +15,22 @@ html, body, #app {
 :root {
     /* Spacings */
     --inline: 24px;
+    --safe-b: env(safe-area-inset-bottom, 0);
     --radius-lg: 25px;
+    --radius-md: 18px;
     --header-h: 62px;
+    --nav-h: calc(64px + var(--safe-b));
+    --safe-area: var(--header-h) var(--inline) var(--safe-b);
 
     /* Colors */
-    --shadow: 0 0 10px rgba(0, 0, 0, 0.1)
+    --shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
 }
 
 button {
     all: unset;
 }
+
 button:not(:disabled) {
     cursor: pointer;
 }
