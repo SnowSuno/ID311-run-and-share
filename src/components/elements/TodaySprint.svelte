@@ -176,7 +176,6 @@
         padding: 5px;
         width: 160px;
         height: 200px;
-        background-color: aqua;
     }
 
     .td_card {
@@ -225,7 +224,6 @@
         cursor: pointer;
         position: relative;
         z-index: 10;
-        /* background-color: deeppink; */
     }
 
     .popup {
