@@ -22,6 +22,8 @@
     .entries(routes)
     .map(([path, route]) => ({ path, route: normalize(route) }))
     .filter(entry => stack?.startsWith(entry.path));
+
+  $: console.log(renderedEntries);
 </script>
 
 {#each renderedEntries as entry (entry.path)}
