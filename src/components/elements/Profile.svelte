@@ -3,7 +3,7 @@
   export let user: UserDoc;
 </script>
 
-<div>
+<div on:click>
     <img src={user.photoURL} alt={user.nickname}>
     <p>{user.nickname}</p>
 </div>

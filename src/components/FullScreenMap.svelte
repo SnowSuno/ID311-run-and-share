@@ -44,8 +44,9 @@
     marker.setPosition($location.toNaver());
   }
 
-  $: if (polyline && route) {
-    polyline.setPath(route.map(p => p.toNaver()));
+  $: if (polyline) {
+    polyline.setVisible(!!route);
+    route && polyline.setPath(route.map(p => p.toNaver()));
   }
 
 </script>

@@ -4,12 +4,13 @@
   import { routes } from "./home/routes";
   import FullScreenMap from "~/components/FullScreenMap.svelte";
   //
-  import { sprint } from "~/store/sprint";
+  import { sprint, displayedRoute } from "~/store";
 
   import { HomeOverlay, SprintOverlay } from "~/components/templates";
+
 </script>
 
-<FullScreenMap route={$sprint?.route}/>
+<FullScreenMap route={$sprint?.route || $displayedRoute}/>
 {#if $sprint === null}
   <HomeOverlay/>
 {:else}

@@ -1,10 +1,20 @@
 <script lang="ts">
+  import { fly } from "svelte/transition";
+  import { duration } from "~/lib/stack-router/constants";
+  import { clickOutside } from "~/utils/click-outside";
+
   export let header = false;
   export let top = false;
   export let bottom = false;
+  export let closable = false;
 </script>
 
-<div class:header class:top class:bottom>
+<div
+  class:header class:top class:bottom
+  transition:fly={{y: "120%", opacity: 1, duration}}
+  on:outclick
+  use:clickOutside
+>
   <slot></slot>
 </div>
 

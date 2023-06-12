@@ -1,5 +1,9 @@
 import { getCollection } from "./utils";
-import type { DocumentReference, GeoPoint } from "firebase/firestore";
+import type {
+  CollectionReference,
+  DocumentReference,
+} from "firebase/firestore";
+import { Geolocation } from "~/utils/geolocation";
 
 export interface UserDoc {
   nickname: string;
@@ -12,9 +16,22 @@ export interface SprintDoc {
   createdAt: Date;
   distance: number;
   level: "easy" | "medium" | "hard";
-  route: GeoPoint[];
+  route: Geolocation[];
   time: number;
   user: DocumentReference<UserDoc>;
 }
 
-export const sprintsRef = getCollection<SprintDoc>("sprints");
+export const sprintsRef: CollectionReference<SprintDoc> = getCollection<SprintDoc>("sprints")
+  .withConverter({
+    toFirestore: (data) => ({
+      ...data,
+      route: data.route.map(loc => loc.toFirestore())
+    }),
+    fromFirestore: (snapshot) => {
+      const {route, ...rest} = snapshot.data();
+      return ({
+        ...rest,
+        route: route.map(geoPoint => Geolocation.fromFirestore(geoPoint))
+      })
+    },
+  });
