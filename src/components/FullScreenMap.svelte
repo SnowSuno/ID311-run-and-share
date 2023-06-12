@@ -1,15 +1,18 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { location } from "~/store/location";
+  import { Geolocation } from "~/utils/geolocation";
+
+  export let route: Geolocation[];
 
   let map: naver.maps.Map;
   let marker: naver.maps.Marker;
+  let polyline: naver.maps.Polyline;
 
-  $: position = new naver.maps.LatLng($location.latitude, $location.longitude);
 
   onMount(() => {
     map = new naver.maps.Map("map", {
-      center: position,
+      center: $location.toNaver(),
       zoom: 17,
       disableKineticPan: false,
       logoControl: false,
@@ -19,26 +22,41 @@
     });
 
     marker = new naver.maps.Marker({
-      position, map, icon: {
+      map,
+      position: $location.toNaver(),
+      icon: {
         content: "<div id='marker'></div>",
       }
+    });
+
+    polyline = new naver.maps.Polyline({
+      map,
+      path: [],
+      strokeColor: "#000",
+      strokeWeight: 3,
+      strokeLineCap: "round",
+      strokeLineJoin: "round",
     });
   });
 
   $: if (map && marker) {
-    map.panTo(position);
-    marker.setPosition(position);
+    map.panTo($location.toNaver());
+    marker.setPosition($location.toNaver());
+  }
+
+  $: if (polyline && route) {
+    polyline.setPath(route.map(p => p.toNaver()));
   }
 
 </script>
 
 <main>
-    <div id="map"></div>
+  <div id="map"></div>
 </main>
 
 <style>
     main {
-        position: absolute;
+        position: fixed;
         top: 0;
         left: 0;
         width: 100%;
