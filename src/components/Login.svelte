@@ -2,7 +2,7 @@
     import Profile from './Profile.svelte';
     // import Todos from './Todos.svelte';
 
-    import { auth, googleProvider } from '../utils/firebase';
+    import { auth, googleProvider } from '../firebase/config.ts';
     import { authState } from 'rxfire/auth';
 
     let user;
