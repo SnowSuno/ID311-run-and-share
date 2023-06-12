@@ -1,5 +1,5 @@
 <script>
-  import { recording } from "~/store/route";
+  import { sprintActions } from "~/store/sprint";
 
 
   import { stackLink } from "~/lib/stack-router";
@@ -109,7 +109,8 @@
   }
 
   const start = () => {
-    recording.set(true);
+    sprintActions.start();
+    // recording.set(true);
     pop();
   }
 

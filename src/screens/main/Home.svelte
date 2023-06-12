@@ -8,29 +8,18 @@
   import { friends } from "~/store";
   import Profile from "../../components/elements/Profile.svelte";
 
-  import { route, recording } from "~/store/route";
+  import { sprint, sprintActions } from "~/store/sprint";
 
-  const stop = () => push("/result").then(() => {
-    recording.set(false);
-    route.set([]);
-  });
+  const stop = () => {
+    sprintActions.stop();
+    push("/result");
+  };
 
 
 </script>
 
-<FullScreenMap route={$route}/>
-{#if $recording}
-  <Sheet top>
-    <Spacer y={20}/>
-    <Text heading>Daily Sprint</Text>
-  </Sheet>
-  <Sheet bottom>
-    <Spacer y={160}/>
-    <MainButton on:click={stop}>
-      Stop
-    </MainButton>
-  </Sheet>
-{:else}
+<FullScreenMap route={$sprint?.route}/>
+{#if $sprint === null}
   <Sheet header>
     <div class="friends">
       {#each $friends as user}
@@ -41,6 +30,17 @@
   <MainButton float stack href="/plan">
     Let's Sprint
   </MainButton>
+{:else}
+  <Sheet top>
+    <Spacer y={20}/>
+    <Text heading>Daily Sprint</Text>
+  </Sheet>
+  <Sheet bottom>
+    <Spacer y={160}/>
+    <MainButton on:click={stop}>
+      Stop
+    </MainButton>
+  </Sheet>
 {/if}
 
 <StackRouter {routes}/>
