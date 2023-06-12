@@ -3,6 +3,7 @@
   import { Main, Splash, Login, Register } from "~/screens";
   import BottomSheet from "./components/elements/BottomSheet.svelte";
 
+
   let loading = true;
   setTimeout(() => { loading = false; }, 1000);
 </script>
