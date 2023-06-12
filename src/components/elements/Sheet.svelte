@@ -1,7 +1,7 @@
 <script lang="ts">
-  export let header;
-  export let top;
-  export let bottom;
+  export let header = false;
+  export let top = false;
+  export let bottom = false;
 </script>
 
 <div class:header class:top class:bottom>
