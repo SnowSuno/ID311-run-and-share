@@ -21,9 +21,11 @@
     nav {
         position: fixed;
         bottom: 0;
-        padding-bottom: env(safe-area-inset-bottom, 0);
+        left: 0;
+        padding-bottom: var(--safe-b);
         border-radius: var(--radius-lg) var(--radius-lg) 0 0;
         box-shadow: var(--shadow);
+        height: calc(64px + var(--safe-b));
 
         display: flex;
         flex-direction: row;
@@ -37,7 +39,6 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 18px 0;
         opacity: 0.3;
     }
 

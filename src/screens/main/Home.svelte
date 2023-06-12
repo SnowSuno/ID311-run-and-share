@@ -1,113 +1,64 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { link } from "svelte-spa-router";
-
-  import { location } from "~/store/location";
-  import StackRouter, { stackLink } from "~/lib/stack-router";
+  import StackRouter, { push } from "~/lib/stack-router";
 
   import { routes } from "./home/routes";
+  import FullScreenMap from "~/components/FullScreenMap.svelte";
+  import { MainButton, Sheet, Spacer, Text } from "~/components/elements";
 
-  let map: naver.maps.Map;
-  let marker: naver.maps.Marker;
+  import { friends } from "~/store";
+  import Profile from "../../components/elements/Profile.svelte";
 
-  $: position = new naver.maps.LatLng($location.latitude, $location.longitude);
+  import { sprint, sprintActions } from "~/store/sprint";
 
-  // $: parsed = querystring.parse(window.location.search);
+  const stop = () => {
+    sprintActions.stop();
+    push("/result");
+  };
 
-  onMount(() => {
-
-    map = new naver.maps.Map("map", {
-      center: position,
-      zoom: 17,
-      disableKineticPan: false,
-      logoControl: false,
-      tileSpare: 5,
-      scaleControl: false,
-      baseTileOpacity: 1,
-    });
-
-    marker = new naver.maps.Marker({
-      position, map, icon: {
-        content: "<div id='marker'></div>",
-      }
-    });
-  });
-
-  $: if (map && marker) {
-    map.panTo(position);
-    marker.setPosition(position);
-  }
 
 </script>
 
-<div id="map"></div>
-<a href="/plan" use:stackLink>Let's Sprint</a>
+<FullScreenMap route={$sprint?.route}/>
+{#if $sprint === null}
+  <Sheet header>
+    <div class="friends">
+      {#each $friends as user}
+        <Profile {user}/>
+      {/each}
+    </div>
+  </Sheet>
+  <MainButton float stack href="/plan">
+    Let's Sprint
+  </MainButton>
+{:else}
+  <Sheet top>
+    <Spacer y={20}/>
+    <Text heading>Daily Sprint</Text>
+  </Sheet>
+  <Sheet bottom>
+    <Spacer y={160}/>
+    <MainButton on:click={stop}>
+      Stop
+    </MainButton>
+  </Sheet>
+{/if}
+
 <StackRouter {routes}/>
 
 <style>
-    #map {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+    .friends {
+        display: flex;
+        flex-direction: row;
+        gap: 12px;
+        margin-inline: calc(-1 * var(--inline));
+        padding-inline: var(--inline);
+
+        overflow-x: scroll;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
     }
 
-    a {
-        position: absolute;
-        bottom: 100px;
+    .friends::-webkit-scrollbar {
+        display: none;
     }
-
-    :global(#marker) {
-        width: 17px;
-        height: 17px;
-        /*border-radius: 50%;*/
-        /*background-color: black;*/
-        /*box-shadow: var(--shadow);*/
-
-        transform: translate(-50%, -50%);
-        position: relative;
-        /*z-index: 1000;*/
-    }
-
-    :global(#marker:before) {
-        content: "";
-        position: absolute;
-        width: 400%;
-        height: 400%;
-        top: -150%;
-        left: -150%;
-        background-color: black;
-        z-index: -1;
-        border-radius: 50%;
-
-        animation: ripple 1.5s ease-out infinite;
-    }
-
-    :global(#marker:after) {
-        content: "";
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: -4px;
-        left: -4px;
-        background-color: black;
-        border: 4px solid white;
-        box-shadow: var(--shadow);
-        z-index: -1;
-        border-radius: 50%;
-
-    }
-
-    @keyframes ripple {
-        from {
-            opacity: 1;
-            transform: scale(0);
-        }
-        to {
-            opacity: 0;
-            transform: scale(1.3);
-        }
-    }
-
 </style>
