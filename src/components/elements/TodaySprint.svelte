@@ -171,12 +171,12 @@
         flex-direction: row;
         align-items: flex-start;
         gap: 5px;
-        margin-right: 15px;
+        margin-right: 10px;
         margin-bottom: 10px;
         padding: 5px;
         width: 160px;
         height: 200px;
-        /* background-color: aqua; */
+        background-color: aqua;
     }
 
     .td_card {
@@ -229,9 +229,9 @@
     }
 
     .popup {
-        position: relative;
-        left: 35%;
-        top: 55%;
+        position: absolute;
+        left: 37%;
+        top: 57%;
         z-index: 1000;
         background: #ffffff;
         box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);

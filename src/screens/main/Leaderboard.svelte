@@ -26,7 +26,7 @@
     async function addSomeData() {
         const falsedate = moment().add(1, 'days').format('YYYYMMDD');
         await addDoc(collection(db, "test3"), {
-            username: "수노",
+            username: "권순호",
             date: date,
             distance: 8.4,
             level: "Expert",
@@ -50,7 +50,9 @@
             console.log(doc.id, " => ", doc.data());
             today_sprints.push([doc.id, doc.data()]);
         });
-        isEmpty = false;
+        if (today_sprints.length > 0) {
+            isEmpty = false;
+        }
         console.log(today_sprints);
     }
 
@@ -67,6 +69,11 @@
         {/each}
     </div>
 {/key}
+{#if isEmpty}
+    <div class="container mx-auto w-5/6 h-40 rounded-3xl shadow-lg pl-20 pt-12 mt-1">
+        <h2 class="font-sans text-[20px] font-bold text-deep-gray">No Sprints Yet!</h2>
+    </div>
+{/if}
 
 <style lang="postcss">
 
@@ -92,6 +99,7 @@
         padding: 2%;
         margin: 7%;
         margin-top: 3%;
+        background-color: pink;
     }
 
 </style>
