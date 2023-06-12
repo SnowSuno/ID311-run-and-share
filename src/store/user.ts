@@ -10,9 +10,10 @@ import { auth } from "./auth";
 export const user = derived<Readable<User | null>, UserDoc | null>(
   auth,
   ($auth, set) => {
-    $auth
-      ? docData(doc(usersRef, $auth.uid))
-        .subscribe(user => set(user || null))
-      : set($auth as null);
+    set(undefined);
+    if (!$auth) return set($auth as null);
+
+    docData(doc(usersRef, $auth.uid))
+      .subscribe(user => set(user || null));
   }
 );

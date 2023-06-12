@@ -7,15 +7,15 @@
   import { location } from "~/store/location";
   import { onDestroy, onMount } from "svelte";
   import { selectedPath } from "~/store/selectRoute";
-  import userIcon from "~/assets/icons/userIcon.svg"; 
-  
+  import userIcon from "~/assets/icons/userIcon.svg";
+
   let map;
   let marker;
   $: position = new naver.maps.LatLng($location.latitude, $location.longitude);
   let filterType = "" // distance, time, level
   let levelName = [] // level
   let distanceValue; // distance
-  let data = [] // data store 
+  let data = [] // data store
   let hours = '00';
   let minutes = '00';
   $: anchorDisabled = data.length === 0
@@ -36,7 +36,7 @@
   const pad = (value) =>{
       return (("0") + value).length > 2 ? value : "0" + value
   }
-  
+
   //Everytime FilterType/FilterValue changes
   //Never console.log(data) it will create infinite loop <-- you can console.log(filteredData)
   $:{
@@ -44,7 +44,7 @@
       filterData(filterType,distanceValue).then((filteredData) => {
         data = filteredData;
         $writableArray = filteredData
-        
+
       }).catch((error) => {
         console.log(error);
       })
@@ -83,7 +83,7 @@
   });
 
   //only once
- 
+
 
   $: if (map && marker) {
       map.panTo(position);
@@ -105,14 +105,17 @@
       }
   }
 
-  
+
 </script>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <div>
 <!--    Plan-->
     <a href="/plan/suggest" use:stackLink>Suggestions</a>
 =======
+=======
+>>>>>>> origin/snowsuno
 <div class="top-container">
     <h2>Search for paths</h2>
     <h6>Plan by</h6>
@@ -206,7 +209,7 @@
     <div class="mapContainer">
         <div id="mapPlan"></div>
         {#if $selectedPath.length === 0}
-        <div class="noselected-path">No route selected</div> 
+        <div class="noselected-path">No route selected</div>
         {:else}
         <div class="user-name">
           <img src={userIcon} alt="img">
@@ -240,7 +243,10 @@
         Start
       </a>
     {/if}
+<<<<<<< HEAD
 >>>>>>> 56e2b54400186e350da92bcb8f69e42af7e10fe1
+=======
+>>>>>>> origin/snowsuno
 </div>
 
 <style>
@@ -331,7 +337,7 @@
     margin-bottom: 3px;
   }
 
-  
+
 
   .filter-distance {
     display: flex;
@@ -341,7 +347,7 @@
     margin-top: 20px;
     margin-bottom: 40px;
   }
-  
+
   .filter-distance .input-distance {
     margin-top: auto;
     height: fit-content;
@@ -461,7 +467,7 @@
     pointer-events: none;
     background: rgba(248, 248, 248, 0.5);
   }
-  
+
   h2 {
     font-size: 21px;
     font-weight: 600;
@@ -485,7 +491,7 @@
     overflow: hidden;
     height: 100%;
     max-height: 260px;
-  
+
   }
   .noselected-path {
     display: flex;
@@ -504,7 +510,7 @@
 
   }
   .sprint-info {
-      
+
       display: flex;
       flex-direction: row;
       background: #F8F8F8;
