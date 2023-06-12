@@ -17,9 +17,7 @@
     </button>
     <h1>{title}</h1>
   </header>
-<!--  <main>-->
     <slot></slot>
-<!--  </main>-->
 </main>
 
 <style>
