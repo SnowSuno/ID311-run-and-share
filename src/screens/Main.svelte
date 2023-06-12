@@ -11,9 +11,3 @@
   <Router {routes}/>
   <NavBar/>
 </SafeArea>
-
-<style>
-  :root {
-      --bottom: var(--nav-h);
-  }
-</style>

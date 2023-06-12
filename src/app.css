@@ -22,6 +22,9 @@ html, body, #app {
     --nav-h: calc(64px + var(--safe-b));
     --safe-area: var(--header-h) var(--inline) var(--safe-b);
 
+    /* Variable styles */
+    --bottom: var(--nav-h);
+
     /* Colors */
     --shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
