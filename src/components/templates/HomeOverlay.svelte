@@ -1,6 +1,6 @@
 <script lang="ts">
   import { displayedRoute, friends, sprints } from "~/store";
-  import { Sheet, MainButton, Profile, Spacer } from "~/components/elements";
+  import { Sheet, MainButton, Profile, Spacer, AnimatedSheet } from "~/components/elements";
 
   // import { doc, query, where, limit, orderBy, getDocs } from "firebase/firestore";
   // import { sprintsRef, usersRef } from "~/firebase/collections";
@@ -39,7 +39,7 @@
 
 {#if selected}
   {#key selected}
-    <Sheet bottom on:outclick={() => {selected = null}}>
+    <AnimatedSheet bottom on:outclick={() => {selected = null}}>
       <Profile user={$friends.find(f => f.id === selected).data()}/>
       {#if selectedSprint}
         time: {selectedSprint.time}
@@ -48,7 +48,7 @@
         no data
       {/if}
       <Spacer y="200"/>
-    </Sheet>
+    </AnimatedSheet>
   {/key}
 {/if}
 
