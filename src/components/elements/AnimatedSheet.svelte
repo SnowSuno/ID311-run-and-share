@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { fly } from "svelte/transition";
+  import { duration } from "~/lib/stack-router/constants";
   import { clickOutside } from "~/utils/click-outside";
 
   export let header = false;
@@ -8,6 +10,7 @@
 
 <div
   class:header class:top class:bottom
+  transition:fly={{y: "110%", opacity: 1, duration}}
   on:outclick
   use:clickOutside
 >
