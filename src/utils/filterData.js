@@ -3,7 +3,7 @@ import { collection, getDocs } from "firebase/firestore";
 
 export async function filterData (filterType, filterValue) {
   try {
-    const querySnapshot = await getDocs(collection(db, "test"));
+    const querySnapshot = await getDocs(collection(db, "sprints"));
     let data = [];
     querySnapshot.docs.forEach((doc) => {
       const backendData = doc.data();
@@ -24,8 +24,8 @@ export async function filterData (filterType, filterValue) {
       data.sort((a, b) => {
         const aTime = a.time;
         const bTime = b.time;
-        const aDiff = Math.abs(aTime - filterValue);
-        const bDiff = Math.abs(bTime - filterValue);
+        const aDiff = Math.abs(aTime - filterValue * 1000);
+        const bDiff = Math.abs(bTime - filterValue * 1000);
         return aDiff - bDiff;
       });
       return data;

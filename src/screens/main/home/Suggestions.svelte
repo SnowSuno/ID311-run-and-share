@@ -6,6 +6,7 @@
   import { selectedPath } from "~/store/selectRoute";
   import { stackLink } from "~/lib/stack-router";
   import { pop } from "svelte-spa-router";
+  import { displayedRoute, friends, sprints } from "~/store";
 
   let map;
   let marker;
@@ -14,6 +15,17 @@
   let polylinePath = [];
   let pathToBackend = [];
 
+
+  function getUserPhotoUrl(userinfo){
+    const user = $friends.find((user) => user.id === userinfo?.user.id)
+    const userPhotoUrl = user.data().photoURL
+    return userPhotoUrl
+  }
+  function getUserName(userinfo){
+    const user = $friends.find((user) => user.id === userinfo?.user.id)
+    const userName = user.data().nickname
+    return userName
+  }
   function selectButton (userinfo) {
     if (polyline) {
       polyline.setMap(null);
@@ -24,15 +36,17 @@
       selectedButton = null;
     } else {
       selectedButton = userinfo.id;
-      userinfo.path.forEach((pathEl) => {
+      userinfo.route.forEach((pathEl) => {
         const latlng = new naver.maps.LatLng(pathEl.latitude, pathEl.longitude);
         polylinePath.push(latlng);
       });
       polyline = new naver.maps.Polyline({
         map: map,
         path: polylinePath,
-        strokeColor: "#f00",
-        strokeWeight: 3
+        strokeColor: "#000",
+        strokeWeight: 3,
+        strokeLineCap: "round",
+        strokeLineJoin: "round",
       });
       console.log(polylinePath[0]);
       map.panTo(polylinePath[0]);
@@ -47,7 +61,6 @@
   // $: parsed = querystring.parse(window.location.search);
 
   onMount(() => {
-
     map = new naver.maps.Map("mapSuggestions", {
       center: position,
       zoom: 17,
@@ -78,7 +91,7 @@
     marker.setPosition(position);
   }
 
-  function handleSelectClick () {
+  function handleSelectClick (){
     $selectedPath = $writableArray.filter((item) => item.id === selectedButton);
     console.log($selectedPath);
     pop();
@@ -105,9 +118,9 @@
       <button class="scrollable-item" class:active={selectedButton === userinfo.id}
               on:click={() => selectButton(userinfo)}>
         <div class="user-name">
-          <img src={userIcon} alt="img">
+          <img src={getUserPhotoUrl(userinfo)} alt="img">
           <span>Sprint by</span>
-          <h2>{userinfo.user}</h2>
+          <h2>{getUserName(userinfo)}</h2>
         </div>
         <div class="sprint-info">
           <div>
@@ -115,11 +128,11 @@
             <span>distance</span>
           </div>
           <div>
-            <h6>{Math.round(userinfo.time / 60)}m</h6>
+            <h6>{Math.round(userinfo.time / (60 * 1000))}m</h6>
             <span>Time</span>
           </div>
           <div>
-            <h6>{Math.round((userinfo.distance / (userinfo.time / 3600)) * 100) / 100}km/h</h6>
+            <h6>{Math.round((userinfo.distance / (userinfo.time / (3600 * 1000))) * 100) / 100}km/h</h6>
             <span>Pace</span>
           </div>
         </div>
@@ -142,7 +155,12 @@
 </div>
 
 
+
 <style>
+    main {
+        display: flex;
+        flex-direction: column;
+    }
     .removeButton {
         display: flex;
         position: fixed;
@@ -155,6 +173,11 @@
         color: white;
         top: 100px;
 
+    }
+    .user-name img {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
     }
 
     .wtf {
