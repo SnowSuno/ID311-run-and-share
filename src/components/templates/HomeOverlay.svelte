@@ -1,6 +1,7 @@
 <script lang="ts">
   import { displayedRoute, friends, sprints } from "~/store";
-  import { Sheet, MainButton, Profile, Spacer, AnimatedSheet } from "~/components/elements";
+  import { Sheet, MainButton, SmallProfile, AnimatedSheet, Profile } from "~/components/elements";
+  import { SprintDisplay } from "~/components/modules";
 
   // import { doc, query, where, limit, orderBy, getDocs } from "firebase/firestore";
   // import { sprintsRef, usersRef } from "~/firebase/collections";
@@ -22,13 +23,13 @@
 
   $: displayedRoute.set(selectedSprint?.route || null);
 
-
+  $: selectedUser = $friends.find(f => f.id === selected)?.data();
 </script>
 
 <Sheet header>
   <div class="friends">
     {#each $friends as user}
-      <Profile
+      <SmallProfile
         user={user.data()}
         selected={selected === user.id}
         on:click={() => { selected = user.id }}
@@ -44,14 +45,16 @@
 {#if selected}
   {#key selected}
     <AnimatedSheet bottom on:outclick={() => {selected = null}}>
-      <Profile user={$friends.find(f => f.id === selected).data()}/>
-      {#if selectedSprint}
-        time: {selectedSprint.time}
-        {selectedSprint.level}
-      {:else}
-        no data
-      {/if}
-      <Spacer y="200"/>
+      <div class="sheet-container">
+        <Profile user={selectedUser}/>
+        <SprintDisplay
+          distance={selectedSprint.distance}
+          time={selectedSprint.time}
+        />
+        <MainButton>
+          Follow {selectedUser.nickname}'s sprint
+        </MainButton>
+      </div>
     </AnimatedSheet>
   {/key}
 {/if}
@@ -71,5 +74,11 @@
 
     .friends::-webkit-scrollbar {
         display: none;
+    }
+
+    .sheet-container {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
     }
 </style>
