@@ -3,7 +3,7 @@
   import { location } from "~/store";
   import { Geolocation } from "~/utils/geolocation";
 
-  export let route: Geolocation[];
+  export let route: Geolocation[] | undefined = undefined;
   export let showMarker: boolean = false;
 
   let map: naver.maps.Map;
@@ -32,16 +32,16 @@
 
     polyline = new naver.maps.Polyline({
       map,
-      path: route?.map(p => p.toNaver()),
+      path: route ? route.map(p => p.toNaver()) : [],
       strokeColor: "#000",
       strokeWeight: 3,
       strokeLineCap: "round",
       strokeLineJoin: "round",
     });
 
-    map.fitBounds(
+    route && map.fitBounds(
       polyline.getBounds(),
-      { top: 50, right: 50, bottom: 50, left: 50 }
+      { top: 10, right: 10, bottom: 10, left: 10 }
     );
   });
 
@@ -49,7 +49,7 @@
   $: if (map && showMarker) marker.setPosition($location.toNaver());
 
   $: if (map && route) {
-    polyline.setPath(route.map(p => p.toNaver()));
+    polyline.setPath(route?.map(p => p.toNaver()));
     map.fitBounds(
       polyline.getBounds(),
       { top: 50, right: 50, bottom: 50, left: 50 }

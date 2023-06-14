@@ -13,7 +13,6 @@
   let selectedButton = null;
   let polyline;
   let polylinePath = [];
-  let pathToBackend = [];
 
 
   function getUserPhotoUrl(userinfo){

@@ -7,7 +7,10 @@
 <div>
   {#each Object.entries(choices) as [choice, label]}
     <button>
-      <input type="radio" bind:group={selected} value={choice} id={choice}/>
+      <input
+        type="radio" bind:group={selected} value={choice} id={choice}
+        on:click={() => {selected === choice && (selected = null)}}
+      />
       <label for={choice}>{label}</label>
     </button>
   {/each}
@@ -34,7 +37,7 @@
         width: 100%;
         background-color: var(--gray);
         color: var(--dark-gray);
-        transition: background-color .1s ease-in-out;
+        transition: background-color .1s ease;
         font-size: 14px;
         font-weight: 500;
     }
