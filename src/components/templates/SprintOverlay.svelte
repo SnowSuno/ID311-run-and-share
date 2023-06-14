@@ -6,10 +6,7 @@
   import { SprintDisplay } from "~/components/modules";
   import { time } from "~/store";
 
-  const stop = () => {
-    sprintActions.stop();
-    push("/result");
-  };
+  $: if ($sprint.endTime) push("/result");
 </script>
 
 <Sheet top>
@@ -23,7 +20,7 @@
       distance={$sprint.distance}
       time={Math.max($time - $sprint.startTime.getTime(), 0)}
     />
-    <MainButton on:click={stop}>
+    <MainButton on:click={sprintActions.stop}>
       Stop
     </MainButton>
   </Flex>

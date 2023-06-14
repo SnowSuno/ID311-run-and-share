@@ -1,6 +1,6 @@
 <script lang="ts">
-  export let heading;
-  export let subheading;
+  export let heading = false;
+  export let subheading = false;
 
 </script>
 
