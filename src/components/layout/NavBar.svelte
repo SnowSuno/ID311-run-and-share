@@ -2,12 +2,12 @@
   import { link } from "svelte-spa-router";
   import active from "svelte-spa-router/active";
 
-  import { Sprint, Leaderboard, User } from "~/assets/icons";
+  import { Run, Leaderboard, User } from "~/assets/icons";
 </script>
 
 <nav>
     <a href="/" use:link use:active>
-        <Sprint/>
+        <Run/>
     </a>
     <a href="/leaderboard" use:link use:active>
         <Leaderboard/>
