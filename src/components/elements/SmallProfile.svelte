@@ -16,6 +16,7 @@
         align-items: center;
         gap: 7px;
         overflow: visible;
+        margin-top: 5px;
     }
 
     img {
