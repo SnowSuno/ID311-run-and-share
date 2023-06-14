@@ -1,4 +1,8 @@
-<div>
+<script>
+  export let gap = 14;
+</script>
+
+<div style="gap: {gap}px;">
   <slot></slot>
 </div>
 
@@ -6,6 +10,5 @@
     div {
         display: flex;
         flex-direction: column;
-        gap: 14px;
     }
 </style>

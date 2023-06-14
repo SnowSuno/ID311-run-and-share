@@ -10,6 +10,7 @@
   let user;
   $: data = sprint?.data();
   $: user = $friends.find(user => user.id === sprint?.data().user.id);
+
 </script>
 
 
@@ -18,7 +19,9 @@
   class:active={selected === sprint.id}
   on:click={() => {selected = sprint.id}}
 >
+  {#if user}
   <Profile user={user.data()}/>
+    {/if}
   <SprintDisplay
     small
     distance={data.distance}
