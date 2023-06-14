@@ -1,24 +1,29 @@
 <script>
   import { sprintActions } from "~/store/sprint";
-
-
   import { stackLink } from "~/lib/stack-router";
   import RightChevron from "~/assets/icons/RightChevron.svelte";
   import ChevronCancel from "~/assets/icons/ChevronCancel.svelte";
   import { filterData } from "~/utils/filterData";
   import { writableArray } from "~/store/suggestRoute";
   import { location } from "~/store/location";
-  import { onDestroy, onMount } from "svelte";
+  import { onMount } from "svelte";
   import { selectedPath } from "~/store/selectRoute";
-  import userIcon from "~/assets/icons/userIcon.svg";
-
-  import { MainButton } from "~/components/elements";
+  import { friends } from "~/store";
+  import { ButtonGroup, MainButton, Spacer } from "~/components/elements";
   import { pop } from "svelte-spa-router";
+  import Text from "~/components/elements/Text.svelte";
+
+  const filterTypes = {
+    distance: "Distance",
+    time: "Time",
+    level: "Level",
+  };
+  let filterType = null; // distance, time, level
+
 
   let map;
   let marker;
   $: position = new naver.maps.LatLng($location.latitude, $location.longitude);
-  let filterType = ""; // distance, time, level
   let levelName = []; // level
   let distanceValue; // distance
   let data = []; // data store
@@ -49,6 +54,7 @@
       filterData(filterType, distanceValue).then((filteredData) => {
         data = filteredData;
         $writableArray = filteredData;
+        console.log(filteredData)
 
       }).catch((error) => {
         console.log(error);
@@ -69,6 +75,18 @@
       });
     }
   }
+
+  function getUserPhotoUrl(userinfo){
+    const user = $friends.find((user) => user.id === userinfo?.user.id)
+    const userPhotoUrl = user.data().photoURL
+    return userPhotoUrl
+  }
+  function getUserName(userinfo){
+    const user = $friends.find((user) => user.id === userinfo?.user.id)
+    const userName = user.data().nickname
+    return userName
+  }
+
   onMount(() => {
     map = new naver.maps.Map("mapPlan", {
       center: position,
@@ -92,17 +110,20 @@
     map.panTo(position);
     marker.setPosition(position);
     if ($selectedPath.length !== 0) {
-      map.panTo(new naver.maps.LatLng($selectedPath[0]?.path[0]?.latitude, $selectedPath[0]?.path[0]?.longitude));
+      console.log($selectedPath)
+      map.panTo(new naver.maps.LatLng($selectedPath[0]?.route[0]?.latitude, $selectedPath[0]?.route[0]?.longitude));
       const pathToDraw = [];
-      $selectedPath[0].path.forEach((geoobj) => {
+      $selectedPath[0].route.forEach((geoobj) => {
         pathToDraw.push(new naver.maps.LatLng(geoobj.latitude, geoobj.longitude));
       });
       const polyline = new naver.maps.Polyline(
         {
           map: map,
           path: pathToDraw,
-          strokeColor: "#f00",
-          strokeWeight: 3
+          strokeColor: "#000",
+          strokeWeight: 3,
+          strokeLineCap: "round",
+          strokeLineJoin: "round",
         }
       );
     }
@@ -117,23 +138,13 @@
 </script>
 
 <main>
-  <h2>Search for paths</h2>
-  <h6>Search by</h6>
-  <div class="radio-inputs">
-    <label class="radio">
-      <input type='radio' bind:group={filterType} name="radio" value="distance">
-      <span class="name">Distance</span>
-    </label>
-    <label class="radio">
-      <input type='radio' bind:group={filterType} name="radio" value="time">
-      <span class="name">Time</span>
-    </label>
-    <label class="radio">
-      <input type='radio' bind:group={filterType} name="radio" value="level">
-      <span class="name">Level</span>
-    </label>
-  </div>
-  {#if $selectedPath.length === 0}
+  <Text heading>Search for paths</Text>
+  <Text subheading>Search by</Text>
+
+  <Spacer y={6}/>
+  <ButtonGroup bind:selected={filterType} choices={filterTypes}/>
+
+  <!-- {#if $selectedPath.length === 0} -->
     <div class="filterContainer">
       {#if filterType === 'distance'}
         <div class="filter-distance">
@@ -208,7 +219,7 @@
         </a>
       {/if}
     </div>
-  {/if}
+  <!-- {/if} -->
   {#if $selectedPath.length !== 0}
     <h6>Following path of</h6>
   {/if}
@@ -218,9 +229,9 @@
       <div class="noselected-path">No route selected</div>
     {:else}
       <div class="user-name">
-        <img src={userIcon} alt="img">
+        <img src={getUserPhotoUrl($selectedPath[0])} alt="img">
         <span>Sprint by</span>
-        <h2>{$selectedPath[0].user}</h2>
+        <h2>{getUserName($selectedPath[0])}</h2>
       </div>
     {/if}
   </div>
@@ -231,11 +242,11 @@
         <span>distance</span>
       </div>
       <div>
-        <h6>{Math.round($selectedPath[0].time / 60)}m</h6>
+        <h6>{Math.round($selectedPath[0].time / (60 * 1000))}m</h6>
         <span>Time</span>
       </div>
       <div>
-        <h6>{Math.round(($selectedPath[0].distance / ($selectedPath[0].time / 3600)) * 100) / 100}km/h</h6>
+        <h6>{Math.round(($selectedPath[0].distance / ($selectedPath[0].time / (3600 * 1000))) * 100) / 100}km/h</h6>
         <span>Pace</span>
       </div>
     </div>
@@ -252,6 +263,11 @@
     main {
         display: flex;
         flex-direction: column;
+    }
+    .user-name img {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
     }
 
     .radio-inputs {
