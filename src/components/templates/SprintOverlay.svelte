@@ -1,7 +1,7 @@
 <script lang="ts">
   import { push } from "~/lib/stack-router";
 
-  import { MainButton, Sheet, Spacer, Text } from "~/components/elements";
+  import { Flex, MainButton, Sheet, Spacer, Text } from "~/components/elements";
   import { sprint, sprintActions } from "~/store/sprint";
   import { SprintDisplay } from "~/components/modules";
   import { time } from "~/store";
@@ -17,7 +17,7 @@
   <Text heading>Daily Sprint</Text>
 </Sheet>
 <Sheet bottom>
-  <div class="sheet-container">
+  <Flex>
     <Text subheading>Current Sprint</Text>
     <SprintDisplay
       distance={$sprint.distance}
@@ -26,13 +26,5 @@
     <MainButton on:click={stop}>
       Stop
     </MainButton>
-  </div>
+  </Flex>
 </Sheet>
-
-<style>
-    .sheet-container {
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-    }
-</style>

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { displayedRoute, friends, sprints, time } from "~/store";
-  import { Sheet, MainButton, SmallProfile, AnimatedSheet, Profile, Paper } from "~/components/elements";
+  import { Sheet, MainButton, SmallProfile, AnimatedSheet, Profile, Paper, Flex } from "~/components/elements";
   import { SprintDisplay } from "~/components/modules";
   import { formatElapsedTime } from "~/utils/time";
   let selected = null;
@@ -37,7 +37,7 @@
 {#if selected}
   {#key selected}
     <AnimatedSheet bottom on:outclick={close}>
-      <div class="sheet-container">
+      <Flex>
         <div class="sprint-profile">
           <Profile user={selectedUser}/>
           {#if selectedSprint}
@@ -60,7 +60,7 @@
             Poke {selectedUser.nickname} to sprint
           </MainButton>
         {/if}
-      </div>
+      </Flex>
     </AnimatedSheet>
   {/key}
 {/if}
@@ -80,12 +80,6 @@
 
     .friends::-webkit-scrollbar {
         display: none;
-    }
-
-    .sheet-container {
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
     }
 
     .sprint-profile {
