@@ -10,8 +10,9 @@
   import { selectedPath } from "~/store/selectRoute";
   import userIcon from "~/assets/icons/userIcon.svg";
   import { displayedRoute, friends, sprints } from "~/store";
-  import { MainButton } from "~/components/elements";
+  import { MainButton, Spacer } from "~/components/elements";
   import { pop } from "svelte-spa-router";
+ 
 
   let map;
   let marker;
@@ -254,6 +255,7 @@
       </div>
     </div>
   {/if}
+  <Spacer y={80}/>
   <MainButton float on:click={start}>
     {$selectedPath.length === 0
       ? "Start without setting path"
@@ -266,6 +268,7 @@
     main {
         display: flex;
         flex-direction: column;
+        overflow: scroll;
     }
     .user-name img {
       width: 25px;
@@ -524,7 +527,7 @@
         display: flex;
         flex-wrap: wrap;
         width: 100%;
-        flex-shrink: 2;
+        flex-shrink: 0;
         margin-top: 6px;
         border-radius: 18px;
         margin-bottom: 20px;
