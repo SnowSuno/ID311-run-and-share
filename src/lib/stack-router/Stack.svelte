@@ -30,12 +30,17 @@
     }
 
     header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
         display: flex;
         flex-direction: row;
         align-items: center;
         padding-inline: 20px;
         height: 50px;
         gap: 12px;
+        background-color: #fff;
     }
 
     button {

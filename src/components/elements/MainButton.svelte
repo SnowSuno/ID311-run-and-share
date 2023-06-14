@@ -42,7 +42,7 @@
     .float {
         width: calc(100% - var(--inline) * 2);
         position: fixed;
-        z-index: 2;
+        z-index: 102;
         bottom: var(--bottom);
         margin-bottom: 14px;
 

@@ -10,35 +10,50 @@
     import { identity } from "svelte/internal";
     import { collection,Timestamp,addDoc,GeoPoint } from "firebase/firestore"; 
     import { db } from "~/firebase/config";
+  import { displayedRoute, friends, sprints } from "~/store";
 
-    let map;
-    let marker;
-    let selectedButton = null
-    let polyline;
-    let polylinePath = []
-    let pathToBackend = []
-    function selectButton(userinfo){
-        if(polyline){
-            polyline.setMap(null)
-            polyline = null
-            polylinePath = []
-        }
-        if(selectedButton === userinfo.id){
-            selectedButton = null  
-        } else{
-            selectedButton = userinfo.id
-            userinfo.path.forEach((pathEl) => {
-                const latlng = new naver.maps.LatLng(pathEl.latitude,pathEl.longitude)
-                polylinePath.push(latlng)
-            })
-            polyline = new naver.maps.Polyline({
-                map:map,
-                path: polylinePath,
-                strokeColor: '#f00',
-                strokeWeight: 3
-            })
-            console.log(polylinePath[0])
-            map.panTo(polylinePath[0])
+  let map;
+  let marker;
+  let selectedButton = null;
+  let polyline;
+  let polylinePath = [];
+  let pathToBackend = [];
+
+
+  function getUserPhotoUrl(userinfo){
+    const user = $friends.find((user) => user.id === userinfo?.user.id)
+    const userPhotoUrl = user.data().photoURL
+    return userPhotoUrl
+  }
+  function getUserName(userinfo){
+    const user = $friends.find((user) => user.id === userinfo?.user.id)
+    const userName = user.data().nickname
+    return userName
+  }
+  function selectButton (userinfo) {
+    if (polyline) {
+      polyline.setMap(null);
+      polyline = null;
+      polylinePath = [];
+    }
+    if (selectedButton === userinfo.id) {
+      selectedButton = null;
+    } else {
+      selectedButton = userinfo.id;
+      userinfo.route.forEach((pathEl) => {
+        const latlng = new naver.maps.LatLng(pathEl.latitude, pathEl.longitude);
+        polylinePath.push(latlng);
+      });
+      polyline = new naver.maps.Polyline({
+        map: map,
+        path: polylinePath,
+        strokeColor: "#000",
+        strokeWeight: 3,
+        strokeLineCap: "round",
+        strokeLineJoin: "round",
+      });
+      console.log(polylinePath[0]);
+      map.panTo(polylinePath[0]);
 
         }
        
@@ -48,33 +63,30 @@
     
     // $: parsed = querystring.parse(window.location.search);
 
-    onMount(() => {
-        
-
-
-        map = new naver.maps.Map("mapSuggestions", {
-            center: position,
-            zoom: 17,
-            disableKineticPan: false,
-            logoControl: false,
-            tileSpare: 5,
-            scaleControl: false,
-            baseTileOpacity: 1,
-        });
-        marker = new naver.maps.Marker({
-            position, map, icon: {
-                content: "<div id='marker'></div>",
-            }
-        });
-        // naver.maps.Event.addListener(map, 'click', function(e){
-        //     const marker = new naver.maps.Marker({
-        //         position:e.coord,
-        //         map:map
-        //     })
-        //     pathToBackend.push(new GeoPoint(e.coord.y,e.coord.x))
-        //     console.log(pathToBackend)
-        // })
+  onMount(() => {
+    map = new naver.maps.Map("mapSuggestions", {
+      center: position,
+      zoom: 17,
+      disableKineticPan: false,
+      logoControl: false,
+      tileSpare: 5,
+      scaleControl: false,
+      baseTileOpacity: 1,
     });
+    marker = new naver.maps.Marker({
+      position, map, icon: {
+        content: "<div id='marker'></div>",
+      }
+    });
+    // naver.maps.Event.addListener(map, 'click', function(e){
+    //     const marker = new naver.maps.Marker({
+    //         position:e.coord,
+    //         map:map
+    //     })
+    //     pathToBackend.push(new GeoPoint(e.coord.y,e.coord.x))
+    //     console.log(pathToBackend)
+    // })
+  });
 
     $: if (map && marker) {
         
@@ -82,10 +94,11 @@
         marker.setPosition(position);
     }
 
-    function handleSelectClick(){
-        $selectedPath = $writableArray.filter((item)=> item.id === selectedButton)
-        console.log($selectedPath)
-    }
+  function handleSelectClick (){
+    $selectedPath = $writableArray.filter((item) => item.id === selectedButton);
+    console.log($selectedPath);
+    pop();
+  }
 
     // async function addRoute(distance,level,path,time,user){
     //    const data = {
@@ -101,50 +114,56 @@
 </script>
 
 <div class="top-container">
-    <div class='empty-div'></div>
-    <div id="mapSuggestions"></div>
-    <div class="scrollable-content">
-        {#each $writableArray as userinfo}
-        <button class="scrollable-item" class:active={selectedButton === userinfo.id} on:click={() => selectButton(userinfo)}>
-            <div class="user-name">
-                <img src={userIcon} alt="img">
-                <span>Sprint by</span>
-                <h2>{userinfo.user}</h2>
-            </div>
-            <div class="sprint-info">
-                <div>
-                    <h6>{Math.round(userinfo.distance * 100) / 100}km</h6>
-                    <span>distance</span>
-                </div>
-                <div>
-                    <h6>{Math.round(userinfo.time / 60)}m</h6>
-                    <span>Time</span>
-                </div>
-                <div>
-                    <h6>{Math.round((userinfo.distance/(userinfo.time / 3600)) * 100) / 100}km/h</h6>
-                    <span>Pace</span>
-                </div>
-            </div>
-        </button>
-        {/each}
-    </div>
-   
-    <a href="/plan" use:stackLink class="select-anchor" class:disabledAnchor = {selectedButton === null} on:click={handleSelectClick}>
-        Select
-    </a>
-    <!-- <button class="removeButton" on:click={
-        () => {
-            addRoute(2.4,"intermediate",pathToBackend,1780,'juggernaut')
-        }
-    }>add route</button> -->
-    
-    
-    <!-- <a href="/" class="wtf">hello</a> -->
+  <div class='empty-div'></div>
+  <div id="mapSuggestions"></div>
+  <div class="scrollable-content">
+    {#each $writableArray as userinfo}
+      <button class="scrollable-item" class:active={selectedButton === userinfo.id}
+              on:click={() => selectButton(userinfo)}>
+        <div class="user-name">
+          <img src={getUserPhotoUrl(userinfo)} alt="img">
+          <span>Sprint by</span>
+          <h2>{getUserName(userinfo)}</h2>
+        </div>
+        <div class="sprint-info">
+          <div>
+            <h6>{Math.round(userinfo.distance * 100) / 100}km</h6>
+            <span>distance</span>
+          </div>
+          <div>
+            <h6>{Math.round(userinfo.time / (60 * 1000))}m</h6>
+            <span>Time</span>
+          </div>
+          <div>
+            <h6>{Math.round((userinfo.distance / (userinfo.time / (3600 * 1000))) * 100) / 100}km/h</h6>
+            <span>Pace</span>
+          </div>
+        </div>
+      </button>
+    {/each}
+  </div>
+
+  <a class="select-anchor" class:disabledAnchor={selectedButton === null}
+     on:click={handleSelectClick}>
+    Select
+  </a>
+  <!-- <button class="removeButton" on:click={
+      () => {
+          addRoute(2.4,"intermediate",pathToBackend,1780,'juggernaut')
+      }
+  }>add route</button> -->
+
+
+  <!-- <a href="/" class="wtf">hello</a> -->
 </div>
 
 
 
 <style>
+    main {
+        display: flex;
+        flex-direction: column;
+    }
     .removeButton {
         display: flex;
         position: fixed;
@@ -158,6 +177,12 @@
         top: 100px;
         
     }
+    .user-name img {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+    }
+
     .wtf {
         position: absolute;
         width: 80%;

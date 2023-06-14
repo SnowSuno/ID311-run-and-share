@@ -1,4 +1,5 @@
 <script>
+  import { sprintActions } from "~/store/sprint";
   import { stackLink } from "~/lib/stack-router";
   import RightChevron from "~/assets/icons/RightChevron.svelte";
   import ChevronCancel from "~/assets/icons/ChevronCancel.svelte";
@@ -8,6 +9,10 @@
   import { onDestroy, onMount } from "svelte";
   import { selectedPath } from "~/store/selectRoute";
   import userIcon from "~/assets/icons/userIcon.svg";
+  import { displayedRoute, friends, sprints } from "~/store";
+  import { MainButton, Spacer } from "~/components/elements";
+  import { pop } from "svelte-spa-router";
+ 
 
   let map;
   let marker;
@@ -43,7 +48,8 @@
     if(filterType === "distance"){
       filterData(filterType,distanceValue).then((filteredData) => {
         data = filteredData;
-        $writableArray = filteredData
+        $writableArray = filteredData;
+        console.log(filteredData)
 
       }).catch((error) => {
         console.log(error);
@@ -64,6 +70,18 @@
       })
     }
   }
+
+  function getUserPhotoUrl(userinfo){
+    const user = $friends.find((user) => user.id === userinfo?.user.id)
+    const userPhotoUrl = user.data().photoURL
+    return userPhotoUrl
+  }
+  function getUserName(userinfo){
+    const user = $friends.find((user) => user.id === userinfo?.user.id)
+    const userName = user.data().nickname
+    return userName
+  }
+
   onMount(() => {
         console.log($selectedPath)
         map = new naver.maps.Map("mapPlan", {
@@ -86,23 +104,26 @@
 
 
   $: if (map && marker) {
-      map.panTo(position);
-      marker.setPosition(position);
-      if($selectedPath.length !== 0){
-        map.panTo(new naver.maps.LatLng($selectedPath[0]?.path[0]?.latitude,$selectedPath[0]?.path[0]?.longitude))
-        const pathToDraw = []
-        $selectedPath[0].path.forEach((geoobj) => {
-          pathToDraw.push(new naver.maps.LatLng(geoobj.latitude,geoobj.longitude))
-        })
-        const polyline = new naver.maps.Polyline(
-          {
-            map:map,
-            path: pathToDraw,
-            strokeColor: '#f00',
-            strokeWeight: 3
-          }
-        )
-      }
+    map.panTo(position);
+    marker.setPosition(position);
+    if ($selectedPath.length !== 0) {
+      console.log($selectedPath)
+      map.panTo(new naver.maps.LatLng($selectedPath[0]?.route[0]?.latitude, $selectedPath[0]?.route[0]?.longitude));
+      const pathToDraw = [];
+      $selectedPath[0].route.forEach((geoobj) => {
+        pathToDraw.push(new naver.maps.LatLng(geoobj.latitude, geoobj.longitude));
+      });
+      const polyline = new naver.maps.Polyline(
+        {
+          map: map,
+          path: pathToDraw,
+          strokeColor: "#000",
+          strokeWeight: 3,
+          strokeLineCap: "round",
+          strokeLineJoin: "round",
+        }
+      );
+    }
   }
 
 
@@ -114,18 +135,18 @@
     <div class="radio-inputs">
       <label class="radio">
       <input type='radio' bind:group={filterType} name="radio" value="distance">
-        <span class="name">Distance</span>
-      </label>
-      <label class="radio">
-        <input type='radio' bind:group={filterType} name="radio" value="time">
-        <span class="name">Time</span>
-      </label>
-      <label class="radio">
-        <input type='radio' bind:group={filterType} name="radio" value="level">
-        <span class="name">Level</span>
-      </label>
-    </div>
-    {#if $selectedPath.length === 0}
+      <span class="name">Distance</span>
+    </label>
+    <label class="radio">
+      <input type='radio' bind:group={filterType} name="radio" value="time">
+      <span class="name">Time</span>
+    </label>
+    <label class="radio">
+      <input type='radio' bind:group={filterType} name="radio" value="level">
+      <span class="name">Level</span>
+    </label>
+  </div>
+  <!-- {#if $selectedPath.length === 0} -->
     <div class="filterContainer">
       {#if filterType === 'distance'}
         <div class="filter-distance">
@@ -194,110 +215,118 @@
         </a>
       {/if}
     </div>
-    {/if}
-    {#if $selectedPath.length !== 0}
-      <h6>Following path of</h6>
-    {/if}
-    <div class="mapContainer">
-        <div id="mapPlan"></div>
-        {#if $selectedPath.length === 0}
-        <div class="noselected-path">No route selected</div>
-        {:else}
-        <div class="user-name">
-          <img src={userIcon} alt="img">
-          <span>Sprint by</span>
-          <h2>{$selectedPath[0].user}</h2>
-        </div>
-        {/if}
-    </div>
-    {#if $selectedPath.length !== 0}
-      <div class="sprint-info">
-        <div>
-            <h6>{Math.round($selectedPath[0].distance * 100) / 100}km</h6>
-            <span>distance</span>
-        </div>
-        <div>
-            <h6>{Math.round($selectedPath[0].time / 60)}m</h6>
-            <span>Time</span>
-        </div>
-        <div>
-            <h6>{Math.round(($selectedPath[0].distance/($selectedPath[0].time / 3600)) * 100) / 100}km/h</h6>
-            <span>Pace</span>
-        </div>
+  <!-- {/if} -->
+  {#if $selectedPath.length !== 0}
+    <h6>Following path of</h6>
+  {/if}
+  <div class="mapContainer">
+    <div id="mapPlan"></div>
+    {#if $selectedPath.length === 0}
+      <div class="noselected-path">No route selected</div>
+    {:else}
+      <div class="user-name">
+        <img src={getUserPhotoUrl($selectedPath[0])} alt="img">
+        <span>Sprint by</span>
+        <h2>{getUserName($selectedPath[0])}</h2>
       </div>
     {/if}
-    {#if $selectedPath.length === 0}
-      <a href="/plan" use:stackLink class="start-without-plan">
-        Start without setting plan
-      </a>
-    {:else }
-      <a href="/plan" use:stackLink class="start-without-plan">
-        Start
-      </a>
-    {/if}
-</div>
+  </div>
+  {#if $selectedPath.length !== 0}
+    <div class="sprint-info">
+      <div>
+        <h6>{Math.round($selectedPath[0].distance * 100) / 100}km</h6>
+        <span>distance</span>
+      </div>
+      <div>
+        <h6>{Math.round($selectedPath[0].time / (60 * 1000))}m</h6>
+        <span>Time</span>
+      </div>
+      <div>
+        <h6>{Math.round(($selectedPath[0].distance / ($selectedPath[0].time / (3600 * 1000))) * 100) / 100}km/h</h6>
+        <span>Pace</span>
+      </div>
+    </div>
+  {/if}
+  <Spacer y={80}/>
+  <MainButton float on:click={start}>
+    {$selectedPath.length === 0
+      ? "Start without setting path"
+      : "Start"
+    }
+  </MainButton>
+</main>
 
 <style>
-  .top-container {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-    padding: 0 20px;
-  }
-  .radio-inputs {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    height: 48px;
-    gap: 12px;
-    margin-top: 6px;
-    justify-content: space-evenly;
-    flex-shrink: 0;
-  }
-  .radio-inputs .radio {
-    flex-grow: 1;
-    flex-shrink: 0;
-    flex-basis: 0%;
-    text-align: center;
-    font-size: 14px;
-  }
-  .radio-inputs .radio input {
-    display: none;
-  }
-  .radio-inputs .radio .name {
-    display: flex;
-    height: 100%;
-    cursor: pointer;
-    align-items: center;
-    justify-content: center;
-    border-radius: 14px;
-    border: none;
-    background:rgba(248, 248, 248, 1);
-    color: rgba(121, 121, 121, 1);
-    transition: all .15s ease-in-out;
-    font-weight: 500;
-    font-style: normal;
-  }
-  .radio-inputs .radio input:checked + .name {
-    background-color: #000000;
-    color: #ffffff;
-  }
-  .filter-time {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    width: 100%;
-    height: 64px;
-    margin-top: 20px;
-    margin-bottom: 40px;
-  }
-  .filter-time .name {
-    margin-top: auto;
-    margin-bottom: 4px;
-    font-size: 24px;
-    font-style: italic;
-    color:#BEBEBE;
+    main {
+        display: flex;
+        flex-direction: column;
+        overflow: scroll;
+    }
+    .user-name img {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+    }
+
+    .radio-inputs {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        height: 48px;
+        gap: 12px;
+        margin-top: 6px;
+        justify-content: space-evenly;
+        flex-shrink: 0;
+    }
+
+    .radio-inputs .radio {
+        flex-grow: 1;
+        flex-shrink: 0;
+        flex-basis: 0%;
+        text-align: center;
+        font-size: 14px;
+    }
+
+    .radio-inputs .radio input {
+        display: none;
+    }
+
+    .radio-inputs .radio .name {
+        display: flex;
+        height: 100%;
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+        border-radius: 14px;
+        border: none;
+        background: rgba(248, 248, 248, 1);
+        color: rgba(121, 121, 121, 1);
+        transition: all .15s ease-in-out;
+        font-weight: 500;
+        font-style: normal;
+    }
+
+    .radio-inputs .radio input:checked + .name {
+        background-color: #000000;
+        color: #ffffff;
+    }
+
+    .filter-time {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        width: 100%;
+        height: 64px;
+        margin-top: 20px;
+        margin-bottom: 40px;
+    }
+
+    .filter-time .name {
+        margin-top: auto;
+        margin-bottom: 4px;
+        font-size: 24px;
+        font-style: italic;
+        color: #BEBEBE;
 
 
   }
@@ -456,29 +485,31 @@
     background: rgba(248, 248, 248, 0.5);
   }
 
-  h2 {
-    font-size: 21px;
-    font-weight: 600;
-    color: #000000;
-  }
-  h6 {
-    font-size: 14px;
-    font-weight: 500;
-    color: rgba(119, 119, 119, 1);
-    margin-top: 12px;
-  }
-  .mapContainer {
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-    flex-shrink: 2;
-    margin-top: 6px;
-    border-radius: 18px;
-    margin-bottom: 20px;
-    overflow: hidden;
-    height: 100%;
-    max-height: 260px;
+    h2 {
+        font-size: 21px;
+        font-weight: 600;
+        color: #000000;
+    }
+
+    h6 {
+        font-size: 14px;
+        font-weight: 500;
+        color: rgba(119, 119, 119, 1);
+        margin-top: 12px;
+    }
+
+    .mapContainer {
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+        flex-shrink: 0;
+        margin-top: 6px;
+        border-radius: 18px;
+        margin-bottom: 20px;
+        overflow: hidden;
+        height: 600px;
+        max-height: 260px;
 
   }
   .noselected-path {
