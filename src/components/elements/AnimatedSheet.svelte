@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { fly } from "svelte/transition";
+  import { duration } from "~/lib/stack-router/constants";
   import { clickOutside } from "~/utils/click-outside";
 
   export let header = false;
@@ -8,6 +10,7 @@
 
 <div
   class:header class:top class:bottom
+  transition:fly={{y: "110%", opacity: 1, duration}}
   on:outclick
   use:clickOutside
 >
@@ -16,18 +19,15 @@
 
 <style>
     div {
-        --end: 20px;
-
         position: fixed;
         left: 0;
         width: 100%;
         background-color: #FFFFFF;
         z-index: 200;
-        /*overflow: visible;*/
     }
 
     .header, .top {
-        padding: 0 var(--inline) var(--end);
+        padding: 0 var(--inline) 22px;
         box-shadow: 0 5px 5px rgba(0, 0, 0, 0.05);
         border-radius: 0 0 var(--radius-lg) var(--radius-lg);
     }
@@ -41,9 +41,9 @@
     }
 
     .bottom {
-        padding: var(--end) var(--inline) 20px;
+        padding: 22px var(--inline) calc(var(--safe-b) + 20px);
         box-shadow: 0 -5px 5px rgba(0, 0, 0, 0.05);
-        bottom: var(--safe-b);
+        bottom: 0;
         border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     }
 </style>

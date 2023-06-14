@@ -1,13 +1,12 @@
 <script lang="ts">
   import { push } from "~/lib/stack-router";
 
-  import { MainButton, Sheet, Spacer, Text } from "~/components/elements";
-  import { sprintActions } from "~/store/sprint";
+  import { Flex, MainButton, Sheet, Spacer, Text } from "~/components/elements";
+  import { sprint, sprintActions } from "~/store/sprint";
+  import { SprintDisplay } from "~/components/modules";
+  import { time } from "~/store";
 
-  const stop = () => {
-    sprintActions.stop();
-    push("/result");
-  };
+  $: if ($sprint.endTime) push("/result");
 </script>
 
 <Sheet top>
@@ -15,8 +14,14 @@
   <Text heading>Daily Sprint</Text>
 </Sheet>
 <Sheet bottom>
-  <Spacer y={160}/>
-  <MainButton on:click={stop}>
-    Stop
-  </MainButton>
+  <Flex>
+    <Text subheading>Current Sprint</Text>
+    <SprintDisplay
+      distance={$sprint.distance}
+      time={Math.max($time - $sprint.startTime.getTime(), 0)}
+    />
+    <MainButton on:click={sprintActions.stop}>
+      Stop
+    </MainButton>
+  </Flex>
 </Sheet>

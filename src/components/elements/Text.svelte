@@ -1,6 +1,6 @@
 <script lang="ts">
-  export let heading;
-  export let subheading;
+  export let heading = false;
+  export let subheading = false;
 
 </script>
 
@@ -10,15 +10,16 @@
 
 <style>
     .heading {
-        font-size: 22px;
+        font-size: 24px;
         font-weight: 600;
-        color: #000;
+        color: var(--black);
+        padding-bottom: 6px;
     }
 
     .subheading {
         font-size: 14px;
-        font-weight: 400;
-        color: #777;
+        font-weight: 500;
+        color: var(--dark-gray);
     }
 
 </style>

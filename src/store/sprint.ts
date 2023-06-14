@@ -1,13 +1,14 @@
 import { get, readonly, writable } from "svelte/store";
 import { location } from "~/store/location";
 import { Geolocation } from "~/utils/geolocation";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, type Timestamp } from "firebase/firestore";
 import { sprintsRef, usersRef } from "~/firebase/collections";
 import { auth } from "~/store/auth";
 
-interface SprintState {
+export interface SprintState {
   paused: boolean;
   route: Geolocation[];
+  distance: number;
   startTime: Date;
   endTime?: Date;
 }
@@ -19,13 +20,19 @@ const start = () => {
   sprintStore.set({
     paused: false,
     route: [],
+    distance: 0,
     startTime: new Date(),
   });
 
   unsubscribe = location.subscribe(coords => {
-    sprintStore.update(({ paused, route, ...rest }) => paused
-      ? ({ paused, route, ...rest })
-      : ({ ...rest, paused, route: [...route, coords] }));
+    sprintStore.update(({ paused, route, distance, ...rest }) => paused
+      ? ({ paused, route, distance, ...rest })
+      : ({
+        ...rest,
+        paused,
+        route: [...route, coords],
+        distance: distance + coords.delta(route.at(-1) ?? coords),
+      }));
   });
 };
 
@@ -39,12 +46,12 @@ const stop = () => {
 // };
 
 // const submit = async () => {
-  const { startTime, endTime, route } = get(sprintStore);
+  const { startTime, endTime, route, distance } = get(sprintStore);
 
   setDoc(
     doc(sprintsRef), {
-      createdAt: endTime,
-      distance: 0,
+      createdAt: endTime as unknown as Timestamp,
+      distance: distance,
       level: "easy",
       route: route,
       time: endTime.getTime() - startTime.getTime(),

@@ -45,3 +45,7 @@
         transform: scale(1.3);
     }
 }
+
+#small-map > div:not(:first-child) {
+    display: none;
+}

@@ -1,34 +1,31 @@
 <script lang="ts">
-  import { displayedRoute, friends, sprints } from "~/store";
-  import { Sheet, MainButton, Profile, Spacer } from "~/components/elements";
-
-  // import { doc, query, where, limit, orderBy, getDocs } from "firebase/firestore";
-  // import { sprintsRef, usersRef } from "~/firebase/collections";
-  // import { selectedPath } from "~/store/selectRoute";
-
+  import { displayedRoute, friends, sprints, time } from "~/store";
+  import { Sheet, MainButton, SmallProfile, AnimatedSheet, Profile, Paper, Flex } from "~/components/elements";
+  import { SprintDisplay } from "~/components/modules";
+  import { formatElapsedTime } from "~/utils/time";
   let selected = null;
 
-  // $: if (selected) {
-  //   getDocs(query(
-  //     sprintsRef,
-  //     where("user", "==", doc(usersRef, selected)),
-  //     orderBy("createdAt", "desc"),
-  //     limit(1),
-  //   )).then(q => q.forEach(sprint => console.log(sprint.id)));
-  // }
   $: selectedSprint = $sprints
     .find(sprint => sprint.data().user.id === selected)
     ?.data();
 
   $: displayedRoute.set(selectedSprint?.route || null);
 
+  $: selectedUser = $friends.find(f => f.id === selected)?.data();
 
+  const close = () => {
+    selected = null;
+  };
 </script>
 
 <Sheet header>
   <div class="friends">
     {#each $friends as user}
-      <Profile user={user.data()} on:click={() => { selected = user.id }}/>
+      <SmallProfile
+        user={user.data()}
+        selected={selected === user.id}
+        on:click={() => { selected = user.id }}
+      />
     {/each}
   </div>
 </Sheet>
@@ -39,16 +36,32 @@
 
 {#if selected}
   {#key selected}
-    <Sheet bottom on:outclick={() => {selected = null}}>
-      <Profile user={$friends.find(f => f.id === selected).data()}/>
-      {#if selectedSprint}
-        time: {selectedSprint.time}
-        {selectedSprint.level}
-      {:else}
-        no data
-      {/if}
-      <Spacer y="200"/>
-    </Sheet>
+    <AnimatedSheet bottom on:outclick={close}>
+      <Flex>
+        <div class="sprint-profile">
+          <Profile user={selectedUser}/>
+          {#if selectedSprint}
+            <p>{formatElapsedTime(selectedSprint.createdAt, $time)}</p>
+          {/if}
+        </div>
+        {#if selectedSprint}
+          <SprintDisplay
+            distance={selectedSprint.distance}
+            time={selectedSprint.time}
+          />
+          <MainButton>
+            Follow {selectedUser.nickname}'s sprint
+          </MainButton>
+        {:else}
+          <Paper>
+            <p class="msg">No sprint yet</p>
+          </Paper>
+          <MainButton on:click={close}>
+            Poke {selectedUser.nickname} to sprint
+          </MainButton>
+        {/if}
+      </Flex>
+    </AnimatedSheet>
   {/key}
 {/if}
 
@@ -58,7 +71,7 @@
         flex-direction: row;
         gap: 12px;
         margin-inline: calc(-1 * var(--inline));
-        padding-inline: var(--inline);
+        padding: 5px var(--inline) 0;
 
         overflow-x: scroll;
         scrollbar-width: none;
@@ -67,5 +80,29 @@
 
     .friends::-webkit-scrollbar {
         display: none;
+    }
+
+    .sprint-profile {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .sprint-profile > p:before {
+        content: "·";
+        padding-inline: 8px;
+    }
+
+    .sprint-profile > p {
+        font-size: 14px;
+        color: #adadad;
+        font-weight: 500;
+    }
+
+    .msg {
+        width: 100%;
+        text-align: center;
+        color: var(--dark-gray);
+        font-weight: 500;
     }
 </style>

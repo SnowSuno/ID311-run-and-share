@@ -2,6 +2,7 @@ import { getCollection } from "./utils";
 import type {
   CollectionReference,
   DocumentReference,
+  Timestamp,
 } from "firebase/firestore";
 import { Geolocation } from "~/utils/geolocation";
 
@@ -13,7 +14,7 @@ export interface UserDoc {
 export const usersRef = getCollection<UserDoc>("users");
 
 export interface SprintDoc {
-  createdAt: Date;
+  createdAt: Timestamp;
   distance: number;
   level: "easy" | "medium" | "hard";
   route: Geolocation[];
