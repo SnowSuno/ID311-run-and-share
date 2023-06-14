@@ -56,7 +56,11 @@
           <Paper>
             <p class="msg">No sprint yet</p>
           </Paper>
-          <MainButton on:click={close}>
+          <MainButton on:click={() => {
+            console.log("qwer")
+            const notification = new Notification("Sprint", {body: "qwer", icon: "/icon.png"})
+            console.log(notification)
+          }}>
             Poke {selectedUser.nickname} to sprint
           </MainButton>
         {/if}

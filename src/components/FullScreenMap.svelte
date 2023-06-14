@@ -67,7 +67,7 @@
       map.panToBounds(
         polyline.getBounds(),
         undefined,
-        { top: 50, right: 50, bottom: 400, left: 50 },
+        { top: 80, right: 10, bottom: 250, left: 10 },
       );
     } else {
       map.morph(get(location).toNaver(), 17);

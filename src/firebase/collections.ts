@@ -16,7 +16,7 @@ export const usersRef = getCollection<UserDoc>("users");
 export interface SprintDoc {
   createdAt: Timestamp;
   distance: number;
-  level: "easy" | "medium" | "hard";
+  level: "beginner" | "intermediate" | "expert";
   route: Geolocation[];
   time: number;
   user: DocumentReference<UserDoc>;
