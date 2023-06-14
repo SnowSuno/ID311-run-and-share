@@ -16,6 +16,9 @@
 
 <style>
     div {
+        --start: 6px;
+        --end: 20px;
+
         position: fixed;
         left: 0;
         width: 100%;
@@ -24,7 +27,7 @@
     }
 
     .header, .top {
-        padding: 6px var(--inline) 22px;
+        padding: var(--start) var(--inline) var(--end);
         box-shadow: 0 5px 5px rgba(0, 0, 0, 0.05);
         border-radius: 0 0 var(--radius-lg) var(--radius-lg);
     }
@@ -38,7 +41,7 @@
     }
 
     .bottom {
-        padding: 22px var(--inline) 6px;
+        padding: var(--end) var(--inline) var(--start);
         box-shadow: 0 -5px 5px rgba(0, 0, 0, 0.05);
         bottom: var(--safe-b);
         border-radius: var(--radius-lg) var(--radius-lg) 0 0;
