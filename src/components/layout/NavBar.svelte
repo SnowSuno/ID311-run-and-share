@@ -19,9 +19,10 @@
 
 <style>
     nav {
-        position: fixed;
+        --safe-b: env(safe-area-inset-bottom, 0);
+
+        position: absolute;
         bottom: 0;
-        left: 0;
         padding-bottom: var(--safe-b);
         border-radius: var(--radius-lg) var(--radius-lg) 0 0;
         box-shadow: var(--shadow);

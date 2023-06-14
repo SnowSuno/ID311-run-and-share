@@ -33,15 +33,15 @@
     async function addSomeData() {
         const falsedate = moment().add(1, 'days').format('YYYYMMDD');
         await addDoc(collection(db, "test3"), {
-            username: "권순호",
+            username: "Khan",
             date: date,
-            distance: 8.4,
-            level: "Expert",
-            pace: 21,
+            distance: 6.4,
+            level: "Intermediate",
+            pace: 17,
             path: [],
-            time: "72:01",
+            time: "57:01",
             emoji: {
-                heart: 1,
+                heart: 0,
                 fire: 0,
                 clap: 3,
             }

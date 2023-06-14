@@ -10,33 +10,34 @@
 
 </script>
 
-<div class="container flex flex-col mx-auto w-5/6 rounded-3xl shadow-lg mt-2 justify-around items-center">
-    <h3 class="font-sans text-[18px] italic font-bold text-deep-gray">
-        Let's Sprint:
+<div class="container flex flex-row mx-auto w-5/6 rounded-3xl shadow-lg mt-2 p-5 justify-between items-center">
+    <h3 class="font-sans text-[14px] italic font-medium text-deep-gray">
+        Let's Sprint
     </h3>
-    <div class="flex flex-row w-5/6 h-1/2 mx-2 mb-5 p-2 items-end justify-evenly">
-        <div class="font-sans text-[16px]/[24px] font-medium text-deep-gray">
+    <div class="bg-deep-gray w-6 h-[1px]"></div>
+    <div class="bg-deep-gray rounded-xl p-2 px-5">
+        <div class="font-sans text-[16px]/[24px] font-medium text-white">
             {metrics[metric]}
         </div>
-        <div class="flex flex-row items-end gap-0.8">
-            {#if metric == 0}
-                <div class="font-sans text-[30px]/[36px] font-bold text-black">
-                    {distanceRange[range]}</div>
-                <div class="font-sans text-[24px]/[30px] font-bold text-black">
-                    km</div>
-            {/if}
-            {#if metric == 1}
-                <div class="font-sans text-[30px]/[36px] font-bold text-black">
-                    {timeRange[range]}</div>
-                <div class="font-sans text-[24px]/[30px] font-bold text-black">
-                    m</div>
-            {/if}
-            {#if metric == 2}
-                <div class="font-sans text-[30px]/[36px] font-bold text-black">
-                    {paceRange[range]}</div>
-                <div class="font-sans text-[24px]/[30px] font-bold text-black">
-                    km/h</div>
-            {/if}
-        </div>
+    </div>
+    <div class="flex flex-row items-end gap-0.8">
+        {#if metric == 0}
+            <div class="bg-black rounded-xl p-2 px-5">
+                <div class="font-sans text-[16px]/[24px] font-medium text-white">
+                    {distanceRange[range]}km</div>
+            </div>
+        {/if}
+        {#if metric == 1}
+            <div class="bg-black rounded-lg p-2 px-5">
+                <div class="font-sans text-[16px]/[24px] font-medium text-white">
+                    {timeRange[range]}m</div>
+            </div>
+        {/if}
+        {#if metric == 2}
+            <div class="bg-black rounded-lg p-2 px-5">
+                <div class="font-sans text-[16px]/[24px] font-medium text-white">
+                    {paceRange[range]}km/h</div>
+            </div>
+        {/if}
     </div>
 </div>
