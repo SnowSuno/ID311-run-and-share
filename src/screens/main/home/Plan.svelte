@@ -118,22 +118,6 @@
 
   <Spacer y={100}/>
 
-  <!--{#if $selectedPath.length !== 0}-->
-  <!--  <div class="sprint-info">-->
-  <!--    <div>-->
-  <!--      <h6>{Math.round($selectedPath[0].distance * 100) / 100}km</h6>-->
-  <!--      <span>distance</span>-->
-  <!--    </div>-->
-  <!--    <div>-->
-  <!--      <h6>{Math.round($selectedPath[0].time / (60 * 1000))}m</h6>-->
-  <!--      <span>Time</span>-->
-  <!--    </div>-->
-  <!--    <div>-->
-  <!--      <h6>{Math.round(($selectedPath[0].distance / ($selectedPath[0].time / (3600 * 1000))) * 100) / 100}km/h</h6>-->
-  <!--      <span>Pace</span>-->
-  <!--    </div>-->
-  <!--  </div>-->
-  <!--{/if}-->
   <MainButton float on:click={start}>
     {$selectedRoute
       ? "Start"

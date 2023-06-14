@@ -1,15 +1,16 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
   import { location } from "~/store/location";
-  import { Geolocation } from "~/utils/geolocation";
   import { displayedRoute, sprint } from "~/store";
   import { get } from "svelte/store";
   import { CurrentLocation } from "~/assets/icons";
+  import { selectedRoute } from "~/store/selectedRoute";
 
   export let id = "map";
 
   // export let route: Geolocation[];
   $: route = $sprint?.route || $displayedRoute;
+  $: recording = !!$sprint?.route;
 
   let map: naver.maps.Map;
   let marker: naver.maps.Marker;
@@ -47,16 +48,15 @@
       strokeLineJoin: "round",
     });
 
-    polyline = new naver.maps.Polyline({
+    overlay = new naver.maps.Polyline({
       map,
       path: [],
-      strokeColor: "#000",
+      visible: false,
+      strokeColor: "rgba(0,0,0,0.5)",
       strokeWeight: 3,
       strokeLineCap: "round",
       strokeLineJoin: "round",
     });
-
-
 
     listener = naver.maps.Event.addListener(map, "dragstart", () => pan = false);
   });
@@ -73,11 +73,20 @@
     map.panTo($location.toNaver());
   }
 
+  $: if (map && recording) {
+    map.panTo($location.toNaver());
+  }
+
   $: if (map && polyline) {
     polyline.setVisible(!!route);
     if (route) {
       pan = false;
       polyline.setPath(route.map(p => p.toNaver()));
+    }
+  }
+
+  $: if (map && polyline && !recording) {
+    if (route) {
       map.panToBounds(
         polyline.getBounds(),
         undefined,
@@ -86,6 +95,15 @@
     } else {
       map.morph(get(location).toNaver(), 17);
       pan = true;
+    }
+  }
+
+  $: if (map && overlay) {
+    if ($selectedRoute) {
+      overlay.setVisible(true);
+      overlay.setPath($selectedRoute.route.map(p => p.toNaver()));
+    } else {
+      overlay.setVisible(false);
     }
   }
 

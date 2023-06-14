@@ -2,7 +2,7 @@ import { derived, writable } from "svelte/store";
 import { sprints } from "~/store/sprints";
 
 const DISTANCE_PAD = 300; // meters
-const TIME_PAD = 60; // seconds
+const TIME_PAD = 5 * 60 * 1000; // milliseconds
 
 interface RouteFilter {
   distance?: number;
