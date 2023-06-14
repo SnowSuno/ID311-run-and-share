@@ -9,9 +9,6 @@
   import Text from "~/components/elements/Text.svelte";
   import { filter, filteredSprints } from "~/store";
   import { SprintDisplay } from "~/components/modules";
-  import { onMount } from "svelte";
-
-  onMount(() => selectedRoute.set(null));
 
   const filterTypes = {
     distance: "Distance",

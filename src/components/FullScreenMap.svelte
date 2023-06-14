@@ -52,7 +52,7 @@
       map,
       path: [],
       visible: false,
-      strokeColor: "rgba(0,0,0,0.5)",
+      strokeColor: "rgba(0,0,0,0.3)",
       strokeWeight: 3,
       strokeLineCap: "round",
       strokeLineJoin: "round",

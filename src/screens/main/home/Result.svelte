@@ -5,11 +5,15 @@
   import { get } from "svelte/store";
   import { onMount } from "svelte";
   import { SprintDisplay } from "~/components/modules";
+  import { selectedRoute } from "~/store/selectedRoute";
 
   let res: SprintState = get(sprint);
   if (!res) pop();
 
-  onMount(sprintActions.reset);
+  onMount(() => {
+    sprintActions.reset();
+    selectedRoute.set(null);
+  });
 </script>
 
 {#if res}

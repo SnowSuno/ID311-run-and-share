@@ -3,6 +3,8 @@
   import { Sheet, MainButton, SmallProfile, AnimatedSheet, Profile, Paper, Flex, Scroll } from "~/components/elements";
   import { SprintDisplay } from "~/components/modules";
   import { formatElapsedTime } from "~/utils/time";
+  import { selectedRoute } from "~/store/selectedRoute";
+  import { push } from "~/lib/stack-router";
 
   let selected = null;
 
@@ -17,6 +19,11 @@
   const close = () => {
     selected = null;
   };
+
+  const follow = () => {
+    selectedRoute.set(selectedSprint);
+    push("/plan");
+  }
 </script>
 
 <Sheet header>
@@ -50,7 +57,7 @@
             distance={selectedSprint.distance}
             time={selectedSprint.time}
           />
-          <MainButton>
+          <MainButton on:click={follow}>
             Follow {selectedUser.nickname}'s sprint
           </MainButton>
         {:else}
