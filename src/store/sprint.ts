@@ -1,11 +1,11 @@
 import { get, readonly, writable } from "svelte/store";
 import { location } from "~/store/location";
 import { Geolocation } from "~/utils/geolocation";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, type Timestamp } from "firebase/firestore";
 import { sprintsRef, usersRef } from "~/firebase/collections";
 import { auth } from "~/store/auth";
 
-interface SprintState {
+export interface SprintState {
   paused: boolean;
   route: Geolocation[];
   distance: number;
@@ -50,7 +50,7 @@ const stop = () => {
 
   setDoc(
     doc(sprintsRef), {
-      createdAt: endTime,
+      createdAt: endTime as unknown as Timestamp,
       distance: distance,
       level: "easy",
       route: route,

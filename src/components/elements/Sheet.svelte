@@ -41,7 +41,7 @@
     }
 
     .bottom {
-        padding: var(--end) var(--inline) 0;
+        padding: var(--end) var(--inline) 20px;
         box-shadow: 0 -5px 5px rgba(0, 0, 0, 0.05);
         bottom: var(--safe-b);
         border-radius: var(--radius-lg) var(--radius-lg) 0 0;
