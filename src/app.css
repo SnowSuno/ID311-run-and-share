@@ -35,7 +35,7 @@ html, body, #app {
 
 }
 
-button {
+button, input {
     all: unset;
 }
 

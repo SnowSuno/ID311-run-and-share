@@ -1,23 +1,27 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
   import { location } from "~/store/location";
-  import { Geolocation } from "~/utils/geolocation";
   import { displayedRoute, sprint } from "~/store";
   import { get } from "svelte/store";
   import { CurrentLocation } from "~/assets/icons";
+  import { selectedRoute } from "~/store/selectedRoute";
+
+  export let id = "map";
 
   // export let route: Geolocation[];
   $: route = $sprint?.route || $displayedRoute;
+  $: recording = !!$sprint?.route;
 
   let map: naver.maps.Map;
   let marker: naver.maps.Marker;
   let polyline: naver.maps.Polyline;
+  let overlay: naver.maps.Polyline;
 
   let pan = true;
   let listener: naver.maps.MapEventListener;
 
   onMount(() => {
-    map = new naver.maps.Map("map", {
+    map = new naver.maps.Map(id, {
       center: $location.toNaver(),
       zoom: 17,
       disableKineticPan: false,
@@ -44,6 +48,16 @@
       strokeLineJoin: "round",
     });
 
+    overlay = new naver.maps.Polyline({
+      map,
+      path: [],
+      visible: false,
+      strokeColor: "rgba(0,0,0,0.5)",
+      strokeWeight: 3,
+      strokeLineCap: "round",
+      strokeLineJoin: "round",
+    });
+
     listener = naver.maps.Event.addListener(map, "dragstart", () => pan = false);
   });
 
@@ -59,15 +73,24 @@
     map.panTo($location.toNaver());
   }
 
+  $: if (map && recording) {
+    map.panTo($location.toNaver());
+  }
+
   $: if (map && polyline) {
     polyline.setVisible(!!route);
     if (route) {
       pan = false;
       polyline.setPath(route.map(p => p.toNaver()));
+    }
+  }
+
+  $: if (map && polyline && !recording) {
+    if (route) {
       map.panToBounds(
         polyline.getBounds(),
         undefined,
-        { top: 50, right: 50, bottom: 400, left: 50 },
+        { top: 80, right: 10, bottom: 250, left: 10 },
       );
     } else {
       map.morph(get(location).toNaver(), 17);
@@ -75,10 +98,19 @@
     }
   }
 
+  $: if (map && overlay) {
+    if ($selectedRoute) {
+      overlay.setVisible(true);
+      overlay.setPath($selectedRoute.route.map(p => p.toNaver()));
+    } else {
+      overlay.setVisible(false);
+    }
+  }
+
 </script>
 
 <main>
-  <div id="map"></div>
+  <div {id}></div>
   <button class:pan on:click={() => { pan = true }}>
     <CurrentLocation/>
   </button>
@@ -94,7 +126,7 @@
         z-index: 0;
     }
 
-    #map {
+    div {
         width: 100%;
         height: 100%;
     }

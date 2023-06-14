@@ -38,7 +38,7 @@
     }
 
     header {
-        position: absolute;
+        position: fixed;
         top: 0;
         left: 0;
         width: 100%;
@@ -48,6 +48,8 @@
         padding-inline: 20px;
         height: var(--header-h);
         gap: 12px;
+        background-color: #fff;
+        z-index: 10;
     }
 
     button {

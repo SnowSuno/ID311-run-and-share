@@ -20,15 +20,3 @@
 {:else}
   <Main/>
 {/if}
-
-<!--<BottomSheet open={true}>-->
-<!--    <div>-->
-<!--    qwerqwiejrowiqjefo-->
-<!--    </div>-->
-<!--</BottomSheet>-->
-
-<!--<style>-->
-<!--    div {-->
-<!--        height: 400px-->
-<!--    }-->
-<!--</style>-->

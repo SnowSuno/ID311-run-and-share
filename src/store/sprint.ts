@@ -4,6 +4,7 @@ import { Geolocation } from "~/utils/geolocation";
 import { doc, setDoc, type Timestamp } from "firebase/firestore";
 import { sprintsRef, usersRef } from "~/firebase/collections";
 import { auth } from "~/store/auth";
+import { selectedRoute } from "~/store/selectedRoute";
 
 export interface SprintState {
   paused: boolean;
@@ -52,12 +53,14 @@ const stop = () => {
     doc(sprintsRef), {
       createdAt: endTime as unknown as Timestamp,
       distance: distance,
-      level: "easy",
+      level: "beginner",
       route: route,
       time: endTime.getTime() - startTime.getTime(),
       user: doc(usersRef, get(auth).uid),
     }
   ).catch(alert);
+
+  selectedRoute.set(null);
 };
 
 const reset = () => {

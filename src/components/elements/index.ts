@@ -9,3 +9,5 @@ export { default as ButtonGroup } from "./ButtonGroup.svelte";
 export { default as Paper } from "./Paper.svelte";
 export { default as Flex } from "./Flex.svelte";
 export { default as RouteDisplay } from "./RouteDisplay.svelte";
+export { default as CheckboxGroup } from "./CheckboxGroup.svelte";
+export { default as Scroll } from "./Scroll.svelte";

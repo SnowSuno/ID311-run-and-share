@@ -5,6 +5,7 @@
   export let href: string = null;
   export let float;
   export let secondary: boolean = false;
+  export let disabled: boolean = false;
   export let stack: boolean = false;
   $: action = href
     ? (stack ? stackLink : link)
@@ -17,6 +18,7 @@
   class:secondary
   use:action
   class:float
+  class:disabled
 >
   <slot></slot>
 </a>
@@ -42,9 +44,12 @@
     .float {
         width: calc(100% - var(--inline) * 2);
         position: fixed;
-        z-index: 2;
+        z-index: 102;
         bottom: var(--bottom);
         margin-bottom: 14px;
-
+    }
+    a.disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
     }
 </style>
