@@ -28,7 +28,11 @@
 <Sheet header>
   <div class="friends">
     {#each $friends as user}
-      <Profile user={user.data()} on:click={() => { selected = user.id }}/>
+      <Profile
+        user={user.data()}
+        selected={selected === user.id}
+        on:click={() => { selected = user.id }}
+      />
     {/each}
   </div>
 </Sheet>
@@ -58,7 +62,7 @@
         flex-direction: row;
         gap: 12px;
         margin-inline: calc(-1 * var(--inline));
-        padding-inline: var(--inline);
+        padding: 5px var(--inline) 0;
 
         overflow-x: scroll;
         scrollbar-width: none;
