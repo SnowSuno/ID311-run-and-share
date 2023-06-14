@@ -133,6 +133,7 @@
     main {
         display: flex;
         flex-direction: column;
+        overflow: scroll;
     }
 
     section {
