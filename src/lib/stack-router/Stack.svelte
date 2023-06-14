@@ -49,6 +49,7 @@
         height: var(--header-h);
         gap: 12px;
         background-color: #fff;
+        z-index: 10;
     }
 
     button {

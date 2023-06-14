@@ -1,9 +1,10 @@
 <script>
   export let flex = false;
+  export let small = false;
 
 </script>
 
-<div class:flex>
+<div class:flex class:small>
   <slot></slot>
 </div>
 
@@ -17,6 +18,9 @@
     div.flex {
         display: flex;
         flex-direction: row;
+    }
 
+    div.small {
+        padding: 12px;
     }
 </style>

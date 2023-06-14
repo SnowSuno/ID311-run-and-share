@@ -3,11 +3,12 @@
   import { sprintActions } from "~/store/sprint";
   import { stackLink } from "~/lib/stack-router";
   import RightChevron from "~/assets/icons/RightChevron.svelte";
-  import { selectedPath } from "~/store/selectRoute";
+  import { selectedRoute } from "~/store/selectedRoute";
   import { ButtonGroup, CheckboxGroup, MainButton, RouteDisplay, Spacer } from "~/components/elements";
   import { pop } from "svelte-spa-router";
   import Text from "~/components/elements/Text.svelte";
   import { filter, filteredSprints } from "~/store";
+  import { SprintDisplay } from "~/components/modules";
 
   const filterTypes = {
     distance: "Distance",
@@ -102,8 +103,17 @@
     <RightChevron color="var(--dark-gray)"/>
   </a>
   <Spacer y={6}/>
-  <RouteDisplay/>
+  <RouteDisplay route={$selectedRoute?.route}/>
 
+  <Spacer y={6}/>
+  {#if $selectedRoute}
+    <SprintDisplay
+      distance={$selectedRoute.distance}
+      time={$selectedRoute.time}
+    />
+  {/if}
+
+  <Spacer y={100}/>
 
   <!--{#if $selectedPath.length !== 0}-->
   <!--  <div class="sprint-info">-->
@@ -122,7 +132,7 @@
   <!--  </div>-->
   <!--{/if}-->
   <MainButton float on:click={start}>
-    {$selectedPath
+    {$selectedRoute
       ? "Start"
       : "Start without setting path"
     }

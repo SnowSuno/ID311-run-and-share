@@ -6,18 +6,21 @@
   import { get } from "svelte/store";
   import { CurrentLocation } from "~/assets/icons";
 
+  export let id = "map";
+
   // export let route: Geolocation[];
   $: route = $sprint?.route || $displayedRoute;
 
   let map: naver.maps.Map;
   let marker: naver.maps.Marker;
   let polyline: naver.maps.Polyline;
+  let overlay: naver.maps.Polyline;
 
   let pan = true;
   let listener: naver.maps.MapEventListener;
 
   onMount(() => {
-    map = new naver.maps.Map("map", {
+    map = new naver.maps.Map(id, {
       center: $location.toNaver(),
       zoom: 17,
       disableKineticPan: false,
@@ -43,6 +46,17 @@
       strokeLineCap: "round",
       strokeLineJoin: "round",
     });
+
+    polyline = new naver.maps.Polyline({
+      map,
+      path: [],
+      strokeColor: "#000",
+      strokeWeight: 3,
+      strokeLineCap: "round",
+      strokeLineJoin: "round",
+    });
+
+
 
     listener = naver.maps.Event.addListener(map, "dragstart", () => pan = false);
   });
@@ -78,7 +92,7 @@
 </script>
 
 <main>
-  <div id="map"></div>
+  <div {id}></div>
   <button class:pan on:click={() => { pan = true }}>
     <CurrentLocation/>
   </button>
@@ -94,7 +108,7 @@
         z-index: 0;
     }
 
-    #map {
+    div {
         width: 100%;
         height: 100%;
     }
