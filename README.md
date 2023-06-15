@@ -1,47 +1,35 @@
-# Svelte + TS + Vite
+# Sprint 
 
-This template should help get you started developing with Svelte and TypeScript in Vite.
+| Name  |  Student Id | Email  
+|----|----|----|
+| Nurlykhan  | 20190779  | knurlykhan@kaist.ac.kr  |
+| SnowSuno  |  20220042 | snowsuno@kaist.ac.kr  |  
+| Ihchae |  20200216 |   ihchaeryu@kaist.ac.kr|  
 
-## Recommended IDE Setup
+| [Github Link](https://github.com/SnowSuno/ID311-run-and-share)  |  [Youtube Link](https://youtube.com)
+|---|---|
+</br>
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+##  Description
+**Sprint** is a mobile application for jogging community, which introduces newest interactions to *connect, plan and sprint daily*.
+With a help of live tracking, people can track their daily sprint, and get accurate sprint summary. Moreover, it has a simple user interface to search for a suitable path recommended by other community members.
+Furthermore, people can check their friends' daily sprint to follow their path, or "poke" their friends to run daily, if any of the friends forgot about their daily sprint! 
 
-## Need an official Svelte framework?
+##  Code Organization
+### State Management
+Firestore being our main storage, we also use Svelte's local storage to keep track of different states. It has overall **MVC** pattern, but it also uses **Observer** pattern, where subscribers gets notified whenever the state of subject changes!
 
-Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
+![state management](public/stateManagement.png)
 
-## Technical considerations
+### App Structure
+From users' perspective, user get see Main Pages, which are Home, LeaderBoard and Settings. These are displayed using simple svelte's spa router. Whereas, Nestes Screens such as Plan.Svelte has own original routing system StackRouter, which has been implemented by our team. In simple terms, StackRouter stacks each screen, and displays it. So either you can add screen, or pop screen!
 
-**Why use this over SvelteKit?**
+![app structure](public/AppStructure.png)
 
-- It brings its own routing solution which might not be preferable for some users.
-- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
+### Project Structure
+As mentioned before, we have screens folder, which is responsible for Screen Display Elements. We tried our best to use Atomic Design for our components, where small atoms such as user icon, joins other atoms to create molecules such as Form and so on. Moreover, we have utils folder, where we store reusable functions needed for filtering data, or calculating distance and more. Lastly, as mentioned before we use Svelte store for local state handling with svelte's writable and readables, while Firestore as a main database, where we have two collections: sprints and users!
 
-This template contains as little as possible to get started with Vite + TypeScript + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
+![code structure](public/CodeStructure.png)
+## Known Issues
+* In small distances, Geolocation api is not accurate. So, path drawing gets loses accuracy too.
 
-Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
-
-**Why `global.d.ts` instead of `compilerOptions.types` inside `jsconfig.json` or `tsconfig.json`?**
-
-Setting `compilerOptions.types` shuts out all other types not explicitly listed in the configuration. Using triple-slash references keeps the default TypeScript setting of accepting type information from the entire workspace, while also adding `svelte` and `vite/client` type information.
-
-**Why include `.vscode/extensions.json`?**
-
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
-
-**Why enable `allowJs` in the TS template?**
-
-While `allowJs: false` would indeed prevent the use of `.js` files in the project, it does not prevent the use of JavaScript syntax in `.svelte` files. In addition, it would force `checkJs: false`, bringing the worst of both worlds: not being able to guarantee the entire codebase is TypeScript, and also having worse typechecking for the existing JavaScript. In addition, there are valid use cases in which a mixed codebase may be relevant.
-
-**Why is HMR not preserving my local component state?**
-
-HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/rixo/svelte-hmr#svelte-hmr).
-
-If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
-
-```ts
-// store.ts
-// An extremely simple external store
-import { writable } from 'svelte/store'
-export default writable(0)
-```
