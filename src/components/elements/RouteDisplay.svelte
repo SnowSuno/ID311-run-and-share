@@ -57,17 +57,40 @@
   }
 </script>
 
-<div>
+<main>
   <div id="small-map"></div>
-</div>
+  {#if !route}
+    <div class="backdrop">
+      No Route selected
+    </div>
+  {/if}
+</main>
 
 
 <style>
+    main {
+        position: relative;
+        border-radius: var(--radius-md);
+        overflow: hidden;
+    }
+
     #small-map {
         width: 100%;
         padding-bottom: 68%;
-        border-radius: var(--radius-md);
     }
 
-
+  .backdrop {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(230, 230, 230, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--dark-gray);
+      font-size: 20px;
+      font-weight: 500;
+  }
 </style>
