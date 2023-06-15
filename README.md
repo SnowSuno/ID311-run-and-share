@@ -6,7 +6,7 @@
 | SnowSuno  |  20220042 | snowsuno@kaist.ac.kr  |  
 | Ihchae |  20200216 |   ihchaeryu@kaist.ac.kr|  
 
-| [Github Link](https://github.com/SnowSuno/ID311-run-and-share)  |  [Youtube Link](https://youtube.com)
+| [Github Link](https://github.com/SnowSuno/ID311-run-and-share)  |  [Youtube Link](https://youtu.be/62ArnzPujnA)
 |---|---|
 </br>
 
