@@ -13,14 +13,25 @@
   let newNameValue = ''
   let userNameChanged = false
 
-
+  function notifyMe() {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js');
+    }
+    Notification.requestPermission(function(result) {
+    if (result === 'granted') {
+        navigator.serviceWorker.ready.then(function(registration) {
+        registration.showNotification('Notification with ServiceWorker');
+        });
+    }
+    });
+  }
   async function getUserData() {
     try{
         const docRef = doc(db,'users',auth.currentUser.uid);
         const docSnap = await getDoc(docRef)
         userName = docSnap.data().nickname
         userPhotoURL = docSnap.data().photoURL
-        console.log(userPhotoURL)
+        
     
     } catch(err){
         console.log(err)
@@ -77,6 +88,7 @@
                 {/if}
             </div>
             {/if}
+            <button class="btn" on:click={() => {notifyMe()}}>notify</button>
            
         </div>
 
