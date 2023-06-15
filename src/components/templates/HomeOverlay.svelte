@@ -5,6 +5,7 @@
   import { formatElapsedTime } from "~/utils/time";
   import { selectedRoute } from "~/store/selectedRoute";
   import { push } from "~/lib/stack-router";
+  import { notify } from "~/utils/notification";
 
   let selected = null;
 
@@ -65,9 +66,7 @@
             <p class="msg">No sprint yet</p>
           </Paper>
           <MainButton on:click={() => {
-            console.log("qwer")
-            const notification = new Notification("Sprint", {body: "qwer", icon: "/icon.png"})
-            console.log(notification)
+            notify("Poked " + selectedUser.nickname + " to sprint");
           }}>
             Poke {selectedUser.nickname} to sprint
           </MainButton>
