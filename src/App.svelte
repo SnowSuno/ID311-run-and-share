@@ -1,6 +1,7 @@
 <script lang="ts">
   import { auth, user, location } from "~/store";
   import { Main, Splash, Login, Register } from "~/screens";
+  import { InstallPrompt } from "~/components/modules";
   // import BottomSheet from "./components/elements/BottomSheet.svelte";
 
   let loading = true;
@@ -20,3 +21,4 @@
 {:else}
   <Main/>
 {/if}
+<InstallPrompt/>
